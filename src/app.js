@@ -18,9 +18,15 @@ app.use(cookieParser())   // To handle the cookies created on the user's end
 
 //Importing User router
 import userRouter from "./routes/user.routes.js"
+import assetRouter from "./routes/asset.routes.js"
+import tokenRouter from "./routes/token.routes.js"
+import assignmentRouter from "./routes/assignment.routes.js"
 
 //Handling route control
 app.use("/api/user",userRouter)
+app.use("/api/asset",assetRouter)
+app.use("/api/token",tokenRouter)
+app.use("/api/assignment",assignmentRouter)
 
 
 export {app}

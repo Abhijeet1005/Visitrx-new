@@ -34,15 +34,20 @@ const assetSchema = new Schema({
         default: 0
     },
 
+    quantityTotal: {
+        type: Number,
+        default: 0
+    },
+
     unit: {
         type: String,
         default: "units"
     },
 
-    assignments: [{
-        type: mongoose.Types.ObjectId,
-        ref: "Assignment"
-    }]
+    // assignments: [{
+    //     type: mongoose.Types.ObjectId,
+    //     ref: "Assignment"
+    // }]
 
 
 },{timestamps: true})
