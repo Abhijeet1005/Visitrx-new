@@ -1,3 +1,4 @@
+import mongoose from "mongoose"
 import { Asset } from "../models/asset.model.js"
 import { Assignment } from "../models/assignment.model.js"
 import { User } from "../models/user.model.js"
@@ -204,8 +205,34 @@ const getAssignmentsByUserId = asyncHandler(async(req,res)=>{
 
 })
 
-const getAllAssignments = asyncHandler(async(req,res)=>{
+const getAllForUser = asyncHandler(async(req,res)=>{
+    const userEmail = req.params?.email
 
+    const user = await User.findOne({
+        email: userEmail
+    })
+
+    if(!user){
+        throw new ApiError(401,"Unable to fetch the provided user")
+    }
+
+    const assignments = await Assignment.find({
+        assignedTo: user._id
+    })
+
+    if(!assignments){
+        throw new ApiError(500,"Unable to fetch the assignments")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(
+            200,
+            "Fetched assignments if any",
+            assignments
+        )
+    )
+    
 })
 
-export {assetAssignRequest,assetAssign,assetUnAssignRequest,assetUnAssign,getAllAssignments,getAssignmentsByAssetId,getAssignmentsByUserId}
+export {assetAssignRequest,assetAssign,assetUnAssignRequest,assetUnAssign,getAllForUser,getAssignmentsByAssetId,getAssignmentsByUserId}

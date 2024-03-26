@@ -2,7 +2,7 @@ import { Router } from "express";
 import { JWTcheck } from "../middlewares/auth.middleware.js";
 import { AssetAdmincheck } from "../middlewares/assetAdmin.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
-import { addAsset, assetAssignRequest, deleteAssetById, getAllAssets } from "../controllers/asset.controllers.js";
+import { addAsset, deleteAssetById, getAllAssets } from "../controllers/asset.controllers.js";
 
 const router = Router();
 
