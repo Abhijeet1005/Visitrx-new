@@ -10,7 +10,7 @@ import { Assignment } from "../models/assignment.model.js";
 
 //Apply auth check
 const getAllAssets = asyncHandler(async (req, res) => {
-    //Later on we can apply aggregation pagination here for bigger database 
+    //Later on we can apply aggregation pagination here for bigger database
     const assets = await Asset.find();
 
     if (!assets) {
@@ -30,8 +30,8 @@ const addAsset = asyncHandler(async (req, res) => {
       type - of assets
     */
 
-    const { type, unit, details } = req.body;
-    const assets = JSON.parse(req.body.assets);
+    const { type, unit, details, returnType, invoicePhoto } = req.body;
+    const assets = req.body.productDetail;
 
     if (!(assets && type)) {
         throw new ApiError(400, "Fill the essential fields");
@@ -51,11 +51,11 @@ const addAsset = asyncHandler(async (req, res) => {
     }
 
     for (const element of assets) {
-        const { name, quantity } = element;
+        const { productName, quantity } = element;
 
         const newAsset = await Asset.create({
-            name: name,
-            type,
+            name: productName,
+            type: returnType,
             details,
             quantityInStock: quantity,
             quantityTotal: quantity,
@@ -99,8 +99,8 @@ const deleteAssetById = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, "Asset deleted successfully", asset));
 });
 
-const updateAssetById = asyncHandler(async(req,res)=>{
-    const { id } = req.params
+const updateAssetById = asyncHandler(async (req, res) => {
+    const { id } = req.params;
 
     if (!id) {
         throw new ApiError(400, "Please provide asset ID");
@@ -113,32 +113,28 @@ const updateAssetById = asyncHandler(async(req,res)=>{
 
     const { name, quantity, type, unit, details } = req.body;
 
-    const updatedAsset = await Asset.findByIdAndUpdate(id,{
-        name,
-        type,
-        details,
-        quantityInStock: quantity,
-        unit,
-    },
-    {
-        new: true,
-    })
+    const updatedAsset = await Asset.findByIdAndUpdate(
+        id,
+        {
+            name,
+            type,
+            details,
+            quantityInStock: quantity,
+            unit,
+        },
+        {
+            new: true,
+        }
+    );
 
-    if(!updatedAsset){
-        throw new ApiError(500, "Unable to update asset")
+    if (!updatedAsset) {
+        throw new ApiError(500, "Unable to update asset");
     }
 
-    return res.send(200)
-    .json(
-        new ApiResponse(
-            200,
-            "Asset updated successfully",
-            updatedAsset
-        )
-    )
-
-})
-
+    return res
+        .send(200)
+        .json(new ApiResponse(200, "Asset updated successfully", updatedAsset));
+});
 
 //Ignore EVERYTHING below or you'll get confused
 
@@ -189,7 +185,7 @@ const updateAssetById = asyncHandler(async(req,res)=>{
 //         quantity
 //     }
 //     const token = generateToken(data)
-//     const emailContent = 
+//     const emailContent =
 //     `
 //     <h1>To verify the assignment of ${quantity} of ${asset.name}</h1>
 //     <br>
@@ -212,9 +208,8 @@ const updateAssetById = asyncHandler(async(req,res)=>{
 
 // })
 
-
 // const assetAssign = asyncHandler(async(req,res)=>{
-    
+
 //     const {assetId, userId, quantity} = req.assignmentData
 
 //     const asset = await Asset.findById(assetId)
@@ -244,4 +239,4 @@ const updateAssetById = asyncHandler(async(req,res)=>{
 
 // })
 
-export { getAllAssets, addAsset, deleteAssetById, updateAssetById,};
+export { getAllAssets, addAsset, deleteAssetById, updateAssetById };
