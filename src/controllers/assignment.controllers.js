@@ -59,21 +59,18 @@ const assetAssignRequest= asyncHandler(async(req,res)=>{
     `
     <h1>To verify the assignment of ${quantity} of ${asset.name}</h1>
     <br>
-    <a href="${process.env.ASSET_TO_USER}/${token}" > Click here </a>
+    <p>${process.env.ASSET_TO_USER}/${token}</p>
     `
-    const emailinfo = await emailer(user.email,emailContent)
+    const emailSubject = "Assignment Email";
 
-    if(emailinfo){
-        return res.status(200)
-        .json(
-            new ApiResponse(
-                200,
-                "Email sent successfully",
-                null
-            )
-        )
-    }else{
-        throw new ApiError(500,"Something happened on our end while sending the email")
+    const emailSent = await sendEmail(user.email, emailSubject, emailContent);
+    
+    if (emailSent) {
+        // Email sent successfully
+        return res.status(200).json(new ApiResponse(200, "Email sent successfully", null));
+    } else {
+        // Failed to send email
+        throw new ApiError(500, "Something happened on our end while sending the email");
     }
 
 })
@@ -146,21 +143,18 @@ const assetUnAssignRequest = asyncHandler(async(req,res)=>{
     `
     <h1>To verify the return of ${assignment.quantityAssigned} of ${asset.name}</h1>
     <br>
-    <a href="${process.env.USER_TO_ASSET}/${token}" > Click here </a>
+    <p>${process.env.USER_TO_ASSET}/${token}</p>
     `
-    const emailinfo = await emailer(assetAdmin.email,emailContent)
+    const emailSubject = "Un-assignment Email";
 
-    if(emailinfo){
-        return res.status(200)
-        .json(
-            new ApiResponse(
-                200,
-                "Email sent successfully",
-                null
-            )
-        )
-    }else{
-        throw new ApiError(500,"Something happened on our end while sending the email")
+    const emailSent = await sendEmail(assetAdmin.email, emailSubject, emailContent);
+    
+    if (emailSent) {
+        // Email sent successfully
+        return res.status(200).json(new ApiResponse(200, "Email sent successfully", null));
+    } else {
+        // Failed to send email
+        throw new ApiError(500, "Something happened on our end while sending the email");
     }
 
 })

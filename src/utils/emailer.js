@@ -8,22 +8,20 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-export const emailer = async (email,content) => {
+export const emailer = async (email, subject, htmlContent) => {
+    try {
+        const mailOptions = {
+            from: process.env.GMAIL,
+            to: email,
+            subject: subject,
+            html: htmlContent,
+        };
 
-    const mailOptions = {
-        from: process.env.GMAIL,
-        to: email,
-        subject: "Confirmation Email",
-        html: content, //Html "content" with token inbuilt
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.log(error);
-            return false
-        } else {
-            console.log("Email Sent" + info.response);
-            return true
-        }
-    }); 
+        const info = await transporter.sendMail(mailOptions);
+        console.log("Email Sent:", info.response);
+        return true;
+    } catch (error) {
+        console.error("Error sending email:", error);
+        return false;
+    }
 };
