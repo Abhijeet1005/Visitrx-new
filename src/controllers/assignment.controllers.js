@@ -63,7 +63,7 @@ const assetAssignRequest= asyncHandler(async(req,res)=>{
     `
     const emailSubject = "Assignment Email";
 
-    const emailSent = await sendEmail(user.email, emailSubject, emailContent);
+    const emailSent = await emailer(user.email, emailSubject, emailContent);
     
     if (emailSent) {
         // Email sent successfully
@@ -100,6 +100,7 @@ const assetAssign = asyncHandler(async(req,res)=>{
     }
 
     asset.quantityInStock = asset.quantityInStock - parseInt(quantity)
+    await asset.save()
 
     return res.status(200)
     .json(
@@ -147,7 +148,7 @@ const assetUnAssignRequest = asyncHandler(async(req,res)=>{
     `
     const emailSubject = "Un-assignment Email";
 
-    const emailSent = await sendEmail(assetAdmin.email, emailSubject, emailContent);
+    const emailSent = await emailer(assetAdmin.email, emailSubject, emailContent);
     
     if (emailSent) {
         // Email sent successfully
@@ -180,6 +181,7 @@ const assetUnAssign = asyncHandler(async(req,res)=>{
     }
 
     asset.quantityInStock = asset.quantityInStock + parseInt(returnedQuantity)
+    await asset.save()
 
     return res.status(200)
     .json(
