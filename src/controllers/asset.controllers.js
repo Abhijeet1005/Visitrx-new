@@ -31,7 +31,7 @@ const addAsset = asyncHandler(async (req, res) => {
     */
 
     const { type, unit, details, returnType } = req.body;
-    const assets = JSON.parse(req.body.assets);
+    const assets = req.body.assets;
 
     if (!(assets && type)) {
         throw new ApiError(400, "Fill the essential fields");
@@ -51,15 +51,15 @@ const addAsset = asyncHandler(async (req, res) => {
     }
 
     for (const element of assets) {
-        const { productName, quantity } = element;
+        const { productName, quantityTotal, unit } = element;
 
         const newAsset = await Asset.create({
             productName,
             returnType,
             type,
             details,
-            quantityInStock: quantity,
-            quantityTotal: quantity,
+            quantityInStock: quantityTotal,
+            quantityTotal: quantityTotal,
             unit,
             assetImage: cloudinaryImage?.url,
             createdBy: req.user._id,
