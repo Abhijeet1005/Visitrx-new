@@ -57,9 +57,9 @@ const assetAssignRequest= asyncHandler(async(req,res)=>{
     const token = generateToken(data)
     const emailContent = 
     `
-    <h1>To verify the assignment of ${quantity} of ${asset.name}</h1>
+    <h1>To verify the assignment of ${quantity} of ${asset.productName}</h1>
     <br>
-    <p>${process.env.ASSET_TO_USER}/${token}</p>
+    <a href="${process.env.ASSET_TO_USER}/${token}">Click Here</a>
     `
     const emailSubject = "Assignment Email";
 
@@ -142,9 +142,9 @@ const assetUnAssignRequest = asyncHandler(async(req,res)=>{
     const token = generateToken(data)
     const emailContent = 
     `
-    <h1>To verify the return of ${assignment.quantityAssigned} of ${asset.name}</h1>
+    <h1>To verify the return of ${assignment.quantityAssigned} of ${asset.productName}</h1>
     <br>
-    <p>${process.env.USER_TO_ASSET}/${token}</p>
+    <a href="${process.env.USER_TO_ASSET}/${token}">Click Here</a>
     `
     const emailSubject = "Un-assignment Email";
 

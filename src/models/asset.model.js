@@ -2,16 +2,22 @@ import mongoose, { Schema } from "mongoose";
 
 const assetSchema = new Schema({
 
-    name: {
+    productName: {
         type: String,
         required: true,
         trim: true,
     },
 
-    type: {
+    returnType: {
         type: String,
         enum: ["Returnable","Non-Returnable"],
         required: true
+    },
+
+    type: {
+        type: String,
+        enum: ["Software","Hardware","Other"],
+        default: "Other"
     },
 
     details: {
@@ -19,7 +25,7 @@ const assetSchema = new Schema({
         trim: true
     },
 
-    assetImage: {
+    invoiceImage: {
         type: String,
         default: "https://picsum.photos/id/619/200/200"
     },

@@ -30,7 +30,7 @@ const addAsset = asyncHandler(async (req, res) => {
       type - of assets
     */
 
-    const { type, unit, details } = req.body;
+    const { type, unit, details, returnType } = req.body;
     const assets = JSON.parse(req.body.assets);
 
     if (!(assets && type)) {
@@ -51,10 +51,11 @@ const addAsset = asyncHandler(async (req, res) => {
     }
 
     for (const element of assets) {
-        const { name, quantity } = element;
+        const { productName, quantity } = element;
 
         const newAsset = await Asset.create({
-            name: name,
+            productName,
+            returnType,
             type,
             details,
             quantityInStock: quantity,
@@ -111,10 +112,11 @@ const updateAssetById = asyncHandler(async(req,res)=>{
         throw new ApiError(400, "Invalid asset ID");
     }
 
-    const { name, quantity, type, unit, details } = req.body;
+    const { productName, quantity, type, unit, details, returnType } = req.body;
 
     const updatedAsset = await Asset.findByIdAndUpdate(id,{
-        name,
+        productName,
+        returnType,
         type,
         details,
         quantityInStock: quantity,
