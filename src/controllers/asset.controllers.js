@@ -43,11 +43,18 @@ const addAsset = asyncHandler(async (req, res) => {
 
     let allAssets = [];
 
-    const assetImagePath = req.file?.path;
-    let cloudinaryImage = null;
+    const invoicePhotoPath = req.files?.invoicePhoto[0]?.path;
+    const productImagePath = req.files?.productImage[0]?.path;
+    let cloudinaryInvoiceImage = null;
+    let cloudinaryProductImage = null;
 
-    if (assetImagePath) {
-        cloudinaryImage = await uploadOnCloudinary(assetImagePath);
+
+    if (invoicePhotoPath && productImagePath) {
+        cloudinaryInvoiceImage = await uploadOnCloudinary(invoicePhotoPath);
+        cloudinaryProductImage = await uploadOnCloudinary(productImagePath);
+    }
+    else{
+        throw new ApiError(400,"Invoice and product images are needed")
     }
 
     for (const element of assets) {
@@ -61,7 +68,8 @@ const addAsset = asyncHandler(async (req, res) => {
             quantityInStock: quantityTotal,
             quantityTotal: quantityTotal,
             unit,
-            assetImage: cloudinaryImage?.url,
+            invoiceImage: cloudinaryInvoiceImage?.url,
+            productImage: cloudinaryProductImage?.url,
             createdBy: req.user._id,
         });
 

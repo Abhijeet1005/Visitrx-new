@@ -30,6 +30,11 @@ const assetSchema = new Schema({
         default: "https://picsum.photos/id/619/200/200"
     },
 
+    productImage: {
+        type: String,
+        default: "https://picsum.photos/id/619/200/200"
+    },
+
     createdBy: {
         type: mongoose.Types.ObjectId,
         ref: "User",
