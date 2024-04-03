@@ -23,15 +23,20 @@ const getAllAssets = asyncHandler(async (req, res) => {
 });
 
 const addAsset = asyncHandler(async (req, res) => {
-    /*
-      assets - array of objects with properties name, quantity
-      details - details for all assets
-      unit - for quantities
-      type - of assets
-    */
 
-    const { type, unit, details, returnType } = req.body;
-    const assets = req.body.assets;
+
+    const { type, details, returnType } = req.body;
+    let assets;
+
+    if(req.headers["user-agent"] === "PostmanRuntime/7.37.0"){
+        assets = JSON.parse(req.body.assets)
+        console.log("this executed")
+    }else{
+        assets = req.body.assets;
+    }
+    
+
+
 
     if (!(assets && type)) {
         throw new ApiError(400, "Fill the essential fields");
@@ -43,6 +48,7 @@ const addAsset = asyncHandler(async (req, res) => {
 
     let allAssets = [];
 
+    console.log(req.files)
     const invoicePhotoPath = req.files?.invoicePhoto[0]?.path;
     const productImagePath = req.files?.productImage[0]?.path;
     let cloudinaryInvoiceImage = null;
@@ -128,6 +134,7 @@ const updateAssetById = asyncHandler(async(req,res)=>{
         type,
         details,
         quantityInStock: quantity,
+        quantityTotal: quantity,
         unit,
     },
     {
@@ -138,7 +145,7 @@ const updateAssetById = asyncHandler(async(req,res)=>{
         throw new ApiError(500, "Unable to update asset")
     }
 
-    return res.send(200)
+    return res.status(200)
     .json(
         new ApiResponse(
             200,
@@ -148,6 +155,7 @@ const updateAssetById = asyncHandler(async(req,res)=>{
     )
 
 })
+
 
 
 //Ignore EVERYTHING below or you'll get confused
