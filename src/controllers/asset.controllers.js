@@ -30,7 +30,7 @@ const addAsset = asyncHandler(async (req, res) => {
 
     if(req.headers["user-agent"] === "PostmanRuntime/7.37.0"){
         assets = JSON.parse(req.body.assets)
-        console.log("this executed")
+
     }else{
         assets = req.body.assets;
     }
