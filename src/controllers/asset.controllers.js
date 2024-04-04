@@ -87,6 +87,25 @@ const addAsset = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, "Asset created successfully", allAssets));
 });
 
+const addAssetFromInward = asyncHandler(async (req,res)=>{
+    /*
+    Here we will receive detailsForEmail and allInward arrays
+    - we need to take each entry of allInward and create a new entry in asset
+    - and then update the asset reference in corresponding Inward model
+    */
+
+    const { allInwards } = req.tokenData
+
+    if(!allInwards){
+        throw new ApiError(400, "Unable to fetch asset details, please re-check with Security Admin")
+    }
+
+    for(inward in allInwards){
+        
+    }
+   
+})
+
 const deleteAssetById = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
@@ -157,7 +176,7 @@ const updateAssetById = asyncHandler(async(req,res)=>{
 })
 
 
-
+export { getAllAssets, addAsset, deleteAssetById, updateAssetById, addAssetFromInward};
 //Ignore EVERYTHING below or you'll get confused
 
 //This will only check the assignment details and send the email to confirm
@@ -262,4 +281,4 @@ const updateAssetById = asyncHandler(async(req,res)=>{
 
 // })
 
-export { getAllAssets, addAsset, deleteAssetById, updateAssetById,};
+
