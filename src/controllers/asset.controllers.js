@@ -29,12 +29,12 @@ const addAsset = asyncHandler(async (req, res) => {
     const { type, details, returnType } = req.body;
     let assets;
 
-    if(req.headers["user-agent"] === "PostmanRuntime/7.37.0"){
+    if(req.headers["user-agent"].startsWith("PostmanRuntime")){
         assets = JSON.parse(req.body.assets)
-
     }else{
         assets = req.body.assets;
     }
+    
 
     if (!(assets && type)) {
         throw new ApiError(400, "Fill the essential fields");
@@ -46,19 +46,21 @@ const addAsset = asyncHandler(async (req, res) => {
 
     let allAssets = [];
 
-    console.log(req.files)
+
     let cloudinaryInvoiceImage = null;
     let cloudinaryProductImage = null;
 
-    if(req.files.productImage[0].path){
-        const productImagePath = req.files?.productImage[0]?.path;
+    if (req.files.productImage && req.files.productImage[0] && req.files.productImage[0].path) {
+        const productImagePath = req.files.productImage[0].path;
         cloudinaryProductImage = await uploadOnCloudinary(productImagePath);
     }
-
-    if(req.files.invoicePhoto[0].path){
-        const invoicePhotoPath = req.files?.invoicePhoto[0]?.path;
+    
+    if (req.files.invoicePhoto && req.files.invoicePhoto[0] && req.files.invoicePhoto[0].path) {
+        const invoicePhotoPath = req.files.invoicePhoto[0].path;
         cloudinaryInvoiceImage = await uploadOnCloudinary(invoicePhotoPath);
     }
+    
+
     
     for (const element of assets) {
         const { productName, quantityTotal, unit } = element;
