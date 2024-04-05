@@ -19,7 +19,7 @@ router.route("/add").post(JWTcheck,AssetAdmincheck,upload.fields([
     }
 ]),addAsset); // Add new asset
 
-router.route("/delete/:id").post(JWTcheck,AssetAdmincheck,deleteAssetById); // Delete asset
+router.route("/delete/:id").delete(JWTcheck,AssetAdmincheck,deleteAssetById); // Delete asset
 
 router.route("/update/:id").post(JWTcheck,AssetAdmincheck,updateAssetById); // Update asset
 
