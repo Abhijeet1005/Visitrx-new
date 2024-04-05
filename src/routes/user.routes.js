@@ -5,6 +5,7 @@ import { changeCurrentPassword, getUser, loginUser, logoutUser, registerUser } f
 
 const router = Router();
 
+router.route("/check").get((req,res)=>{res.status(200).send("OK")})
 router.route("/").get(JWTcheck,getUser)
 // router.route("/getAllUsers").get(JWTcheck,/*getAllUsers*/) //Add the AppAdmin check middleware here
 router.route("/register").post(JWTcheck,AppAdmincheck,registerUser) //After registering the AppAdmin user, add the AppAdmin middleware here

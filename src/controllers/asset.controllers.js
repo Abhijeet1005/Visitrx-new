@@ -7,6 +7,7 @@ import { User } from "../models/user.model.js";
 import { generateToken } from "../utils/tokenizer.js";
 import { emailer } from "../utils/emailer.js";
 import { Assignment } from "../models/assignment.model.js";
+import { Inward } from "../models/inward.model.js";
 
 //Apply auth check
 const getAllAssets = asyncHandler(async (req, res) => {
@@ -34,9 +35,6 @@ const addAsset = asyncHandler(async (req, res) => {
     }else{
         assets = req.body.assets;
     }
-    
-
-
 
     if (!(assets && type)) {
         throw new ApiError(400, "Fill the essential fields");
@@ -100,9 +98,49 @@ const addAssetFromInward = asyncHandler(async (req,res)=>{
         throw new ApiError(400, "Unable to fetch asset details, please re-check with Security Admin")
     }
 
-    for(inward in allInwards){
-        
+    let allAssets = []
+
+    for(let inward in allInwards){
+        const inwardDocument = await Inward.findById(inward)
+
+        if(!inwardDocument){
+            throw new ApiError(401,"Unable to fetch specific entries, please re-check data")
+        }
+
+        const asset = await Asset.create({
+            productName: inwardDocument.productName,
+            returnType: inwardDocument.returnType,
+            type: inwardDocument.type,
+            details: inwardDocument.details,
+            quantityInStock: inwardDocument.quantityTotal,
+            quantityTotal: inwardDocument.quantityTotal,
+            unit: inwardDocument.unit,
+            invoiceImage: inwardDocument.invoiceImage,
+            productImage: inwardDocument.productImage,
+            createdBy: inwardDocument.createdBy,
+        })
+
+        if(!asset){
+            throw new ApiError(500,"Something happened during asset creation")
+        }
+        allAssets.push(asset._id)
+
+        inwardDocument.assetReference = asset._id
+        await inwardDocument.save()
     }
+
+    if(!(allInwards.length === allAssets.length)){
+        throw new ApiError(500,"Something went wrong while creating assets")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(
+            200,
+            "Assets added successfully",
+            allAssets
+        )
+    )
    
 })
 

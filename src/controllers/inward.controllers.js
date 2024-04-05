@@ -34,9 +34,6 @@ const addInward = asyncHandler(async(req,res)=>{
     }else{
         assets = req.body.assets;
     }
-    
-
-
 
     if (!(assets && type)) {
         throw new ApiError(400, "Fill the essential fields");
