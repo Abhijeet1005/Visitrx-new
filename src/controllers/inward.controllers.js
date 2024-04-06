@@ -46,19 +46,19 @@ const addInward = asyncHandler(async(req,res)=>{
     let allInwards = [];
     let detailsForEmail = []
 
-    const invoicePhotoPath = req.files?.invoicePhoto[0]?.path;
-    const productImagePath = req.files?.productImage[0]?.path;
     let cloudinaryInvoiceImage = null;
     let cloudinaryProductImage = null;
 
-
-    if (invoicePhotoPath && productImagePath) {
-        cloudinaryInvoiceImage = await uploadOnCloudinary(invoicePhotoPath);
+    if (req.files.productImage && req.files.productImage[0] && req.files.productImage[0].path) {
+        const productImagePath = req.files.productImage[0].path;
         cloudinaryProductImage = await uploadOnCloudinary(productImagePath);
     }
-    else{
-        throw new ApiError(400,"Invoice and product images are needed")
+    
+    if (req.files.invoicePhoto && req.files.invoicePhoto[0] && req.files.invoicePhoto[0].path) {
+        const invoicePhotoPath = req.files.invoicePhoto[0].path;
+        cloudinaryInvoiceImage = await uploadOnCloudinary(invoicePhotoPath);
     }
+    
 
     for (const element of assets) {
         const { productName, quantityTotal, unit } = element;

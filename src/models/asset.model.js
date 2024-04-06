@@ -55,6 +55,21 @@ const assetSchema = new Schema({
         default: "units"
     },
 
+    returnDate: {
+        type: Date,
+        default: null
+    },
+
+    condition: {
+        type: String,
+        enun: ["Old","New"],
+        default: "New"
+    },
+
+    tags: {
+        type: String,
+    }
+
     // assignments: [{
     //     type: mongoose.Types.ObjectId,
     //     ref: "Assignment"
