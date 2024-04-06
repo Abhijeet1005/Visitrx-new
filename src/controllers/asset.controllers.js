@@ -26,7 +26,7 @@ const getAllAssets = asyncHandler(async (req, res) => {
 const addAsset = asyncHandler(async (req, res) => {
 
 
-    const { type, details, returnType, condition, tags} = req.body;
+    const { type, details, returnType, condition, tags, expiryDate, returnDate, buyingDate} = req.body;
     let assets;
 
     if(req.headers["user-agent"].startsWith("PostmanRuntime")){
@@ -72,6 +72,9 @@ const addAsset = asyncHandler(async (req, res) => {
             details,
             condition,
             tags,
+            expiryDate,
+            returnDate,
+            buyingDate,
             quantityInStock: quantityTotal,
             quantityTotal: quantityTotal,
             unit,
@@ -186,7 +189,7 @@ const updateAssetById = asyncHandler(async(req,res)=>{
         throw new ApiError(400, "Invalid asset ID");
     }
 
-    const { productName, quantity, type, unit, details, returnType, returnDate, tags, condition } = req.body;
+    const { productName, quantity, type, unit, details, returnType, returnDate, tags, condition, buyingDate, expiryDate } = req.body;
 
     const updatedAsset = await Asset.findByIdAndUpdate(id,{
         productName,
@@ -197,6 +200,8 @@ const updateAssetById = asyncHandler(async(req,res)=>{
         quantityTotal: quantity,
         unit,
         returnDate,
+        expiryDate,
+        buyingDate,
         tags,
         condition,
     },

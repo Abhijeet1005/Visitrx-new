@@ -57,7 +57,6 @@ const assetSchema = new Schema({
 
     returnDate: {
         type: Date,
-        default: null
     },
 
     condition: {
@@ -68,6 +67,14 @@ const assetSchema = new Schema({
 
     tags: {
         type: String,
+    },
+
+    buyingDate: {
+        type: Date
+    },
+
+    expiryDate: {
+        type: Date
     }
 
     // assignments: [{
