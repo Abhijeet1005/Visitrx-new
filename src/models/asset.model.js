@@ -61,7 +61,7 @@ const assetSchema = new Schema({
 
     condition: {
         type: String,
-        enun: ["Old","New"],
+        enum: ["Old","New","Scrap"],
         default: "New"
     },
 
