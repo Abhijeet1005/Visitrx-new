@@ -156,6 +156,19 @@ const getUser = asyncHandler(async (req,res)=>{
     ))
 })
 
+const getAllUsers = asyncHandler(async (req,res)=>{
+    const allUsers = await User.find().select("-refreshToken -password")
+
+    return res.status(200)
+    .json(
+        new ApiResponse(
+            200,
+            "Users fetched successfully",
+            allUsers
+        )
+    )
+})
+
 const changeCurrentPassword = asyncHandler(async(req, res) => {
     const {oldPassword, newPassword} = req.body
 
@@ -219,4 +232,4 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 })
 
 
-export {registerUser,loginUser,logoutUser,getUser,changeCurrentPassword,refreshAccessToken}
+export {registerUser,loginUser,logoutUser,getUser,getAllUsers,changeCurrentPassword,refreshAccessToken}
