@@ -3,12 +3,12 @@ import mongoose, { Schema } from "mongoose";
 const assignSchema = new Schema({
     
     assetAssigned: {
-        type: mongoose.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Asset"
     },
 
     assignedTo: {
-        type: mongoose.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "User"
     },
 

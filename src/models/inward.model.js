@@ -2,10 +2,9 @@ import mongoose, { Schema } from "mongoose";
 
 const inwardSchema = new Schema({
 
-    productName: {
-        type: String,
+    assets: {
+        type: Array,
         required: true,
-        trim: true,
     },
 
     returnType: {
@@ -36,24 +35,33 @@ const inwardSchema = new Schema({
     },
 
     createdBy: {
-        type: mongoose.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "User",
     },
 
-    quantityTotal: {
-        type: Number,
-        default: 0
-    },
+    //These fields will be fetched from products array later on
 
-    unit: {
+    // quantityTotal: {
+    //     type: Number,
+    //     default: 0
+    // },
+
+    // unit: {
+    //     type: String,
+    //     default: "units"
+    // },
+
+    assetReference: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Asset"
+        }
+    ],
+
+    assetType: {
         type: String,
-        default: "units"
-    },
-
-    assetReference: {
-        type: mongoose.Types.ObjectId,
-        ref: "Asset",
-        default: null
+        enum: ["Asset","Stock","Other"],
+        default: "Other"
     },
 
     broughtByContact: {
@@ -61,14 +69,42 @@ const inwardSchema = new Schema({
         required: true
     },
     
-    broughtByName: {
+    companyName: {
         type: String,
     },
 
-    // verified: {
-    //     type: Boolean,
-    //     default: false
-    // }
+    invoiceNo: {
+        type: String
+    },
+
+    invoiceAmount: {
+        type: Number
+    },
+
+    //for returnable products
+    returnDate: {
+        type: Date,
+    },
+
+    condition: {
+        type: String,
+        enum: ["Old","New","Scrap"],
+        default: "New"
+    },
+
+    tags: {
+        type: String,
+    },
+
+    buyingDate: {
+        type: Date
+    },
+
+    //This is warranty expiry
+    expiryDate: {
+        type: Date
+    }
+
 
 },{timestamps: true})
 

@@ -36,7 +36,7 @@ const assetSchema = new Schema({
     },
 
     createdBy: {
-        type: mongoose.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "User",
     },
 
@@ -76,12 +76,6 @@ const assetSchema = new Schema({
     expiryDate: {
         type: Date
     }
-
-    // assignments: [{
-    //     type: mongoose.Types.ObjectId,
-    //     ref: "Assignment"
-    // }]
-
 
 },{timestamps: true})
 
