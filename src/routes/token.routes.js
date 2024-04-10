@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { tokenCheckMiddleware } from "../controllers/token.controllers.js";
+import { tokenCheckMiddleware } from "../middlewares/tokenCheck.middleware.js";
 import { assetAssign, assetUnAssign } from "../controllers/assignment.controllers.js";
 import { addAssetFromInward } from "../controllers/asset.controllers.js";
 

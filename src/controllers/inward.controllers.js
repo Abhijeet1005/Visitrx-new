@@ -4,6 +4,8 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Inward } from "../models/inward.model.js";
 import { generateToken } from "../utils/tokenizer.js";
 import { User } from "../models/user.model.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { emailer } from "../utils/emailer.js";
 
 const getAllInward = asyncHandler(async(req,res)=>{
 
@@ -23,28 +25,33 @@ const getAllInward = asyncHandler(async(req,res)=>{
     )
 })
 
+
+//Need to take and store the values in the form similar to the form for addAsset
+//Then we can just pass a single inward reference and proceed with the asset addition 
+//and need to have some extra inward fields as per the old inward form and a reference array to store all the asset reference 
 const addInward = asyncHandler(async(req,res)=>{
 
-    const { type, details, returnType } = req.body;
+    const { type, details, returnType, assetType, broughtByContact, companyName, invoiceNo, invoiceAmount, returnDate, condition, tags, buyingDate, expiryDate } = req.body;
     let assets;
 
-    if(req.headers["user-agent"] === "PostmanRuntime/7.37.0"){
+    if (!(req.body.assets && type)) {
+        throw new ApiError(400, "Fill the essential fields");
+    }
+
+    if(req.headers["user-agent"].startsWith("PostmanRuntime")){
         assets = JSON.parse(req.body.assets)
 
     }else{
         assets = req.body.assets;
     }
-
-    if (!(assets && type)) {
-        throw new ApiError(400, "Fill the essential fields");
-    }
+    
 
     if (assets.length === 0) {
         throw new ApiError(400, "Assets cannot be empty");
     }
 
-    let allInwards = [];
-    let detailsForEmail = []
+    // let allInwards = [];
+    // let detailsForEmail = []
 
     let cloudinaryInvoiceImage = null;
     let cloudinaryProductImage = null;
@@ -58,55 +65,52 @@ const addInward = asyncHandler(async(req,res)=>{
         const invoicePhotoPath = req.files.invoicePhoto[0].path;
         cloudinaryInvoiceImage = await uploadOnCloudinary(invoicePhotoPath);
     }
-    
 
-    for (const element of assets) {
-        const { productName, quantityTotal, unit } = element;
+    const inward = await Inward.create({
+        assets,
+        returnType,
+        type,
+        details,
+        invoiceImage: cloudinaryInvoiceImage?.url || null,
+        productImage: cloudinaryProductImage?.url || null,
+        assetType,
+        broughtByContact,
+        companyName,
+        invoiceNo,
+        invoiceAmount,
+        returnDate,
+        condition,
+        tags,
+        buyingDate,
+        expiryDate,
+        createdBy: req.user._id,
+    })
 
-        const newInward = await Inward.create({
-            productName,
-            returnType,
-            type,
-            details,
-            quantityTotal,
-            unit,
-            invoiceImage: cloudinaryInvoiceImage?.url,
-            productImage: cloudinaryProductImage?.url,
-            createdBy: req.user._id,
-        });
-
-        allInwards.push(newInward);
-
-        let detail = {
-            name: newInward.productName,
-            quantity: newInward.quantityTotal
-        }
-        detailsForEmail.push(detail)
+    if(!inward){
+        throw new ApiError(500, "Unable to create inward entry")
     }
 
-    /*
-      - now we will have the array of inward entries
-      - we will send that array in token (need to fetch all the name and quantity to display to asset admin)
-      - on verify we create a new asset entry with details from the inward documents (then reference the asset to correponding inward)
-    */
     const data = {
-        allInwards,
-        detailsForEmail,
+        inwardId: inward._id
     }
+
+    //Check from here to token to asset store
     const token = generateToken(data)
     
-    const user = await User.find({
-        role: "SecurityAdmin"
+    const user = await User.findOne({
+        role: "AssetAdmin"
     }).select("-password -refreshToken")
 
-    const emailContent = `<h1>To verify the addition of the following assets from security: </h1>`
 
-    detailsForEmail.forEach(detail => {
-        emailContent += `<p>Product: ${detail.name}, Quantity: ${detail.quantity}</p>`;
+    let emailContent = `<h1>To verify the addition of the following assets from security: </h1>`
+
+    assets.forEach(product => {
+        emailContent += `<p>Product: ${product.productName}, Quantity: ${product.quantityTotal} ${product.unit}</p>`;
     })
-    emailContent += `<br><a href="${process.env.SECURITY_TO_ASSET}/?token=${token}">Click Here</a>`;
+    emailContent += `<br><a href="${process.env.SECURITY_TO_ASSET}/${token}">Click Here</a>`;
     
-    const emailSubject = "Security Inward Email";
+    const emailSubject = "Inward to asset addition verification email";
+
 
     const emailSent = await emailer(user.email, emailSubject, emailContent);
     
@@ -120,3 +124,4 @@ const addInward = asyncHandler(async(req,res)=>{
 })
 
 export {getAllInward,addInward}
+

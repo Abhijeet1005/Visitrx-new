@@ -5,8 +5,8 @@ import { Token } from "../models/token.model.js";
 
 const tokenCheckMiddleware = asyncHandler(async(req,res,next)=>{
     //This function will verify the token and then call the assetAssign function in asset controller
-    const {token} = req.params
 
+    const {token} = req.params
     const checkForUsed = await Token.findOne({
         token: token.toString()
     })
@@ -20,6 +20,10 @@ const tokenCheckMiddleware = asyncHandler(async(req,res,next)=>{
     if(!decodedToken){
         throw new ApiError(400,"Invalid authentication token")
     }
+
+    await Token.create({
+        token: token
+    })
 
     req.tokenData = decodedToken
     next()

@@ -92,64 +92,69 @@ const addAsset = asyncHandler(async (req, res) => {
 });
 
 const addAssetFromInward = asyncHandler(async (req,res)=>{
-    /*
-    Here we will receive detailsForEmail and allInward arrays
-    - we need to take each entry of allInward and create a new entry in asset
-    - and then update the asset reference in corresponding Inward model
-    */
+    
+    const { inwardId } = req.tokenData
+    
 
-    const { allInwards } = req.tokenData
-
-    if(!allInwards){
-        throw new ApiError(400, "Unable to fetch asset details, please re-check with Security Admin")
+    if (!inwardId) {
+        throw new ApiError(400, "No ID found in request");
     }
+
+    // Validate ID (ensure it's a string or a valid ObjectId)
+    if (typeof inwardId !== "string" && !mongoose.Types.ObjectId.isValid(inwardId)) {
+        throw new ApiError(400, "Got invalid ID from token");
+    }
+
+    //Asset addition logic here
+
+    const inward = await Inward.findById(inwardId)
 
     let allAssets = []
+    for(let product of inward.assets){
 
-    for(let inward in allInwards){
-        const inwardDocument = await Inward.findById(inward)
+        const newAsset = await Asset.create({
+            productName: product.productName,
+            returnType: inward.returnType,
+            type: inward.type,
+            details: inward.details,
+            condition: inward.condition,
+            tags: inward.tags,
+            expiryDate: inward.expiryDate,
+            returnDate: inward.returnDate,
+            buyingDate: inward.buyingDate,
+            quantityInStock: product.quantityTotal,
+            quantityTotal: product.quantityTotal,
+            unit: inward.unit,
+            invoiceImage: inward.invoiceImage,
+            productImage: inward.productImage,
+            createdBy: inward.createdBy,
+        });
 
-        if(!inwardDocument){
-            throw new ApiError(401,"Unable to fetch specific entries, please re-check data")
+        if(!newAsset){
+            throw new ApiError(500, "Unable to create asset entry")
         }
 
-        const asset = await Asset.create({
-            productName: inwardDocument.productName,
-            returnType: inwardDocument.returnType,
-            type: inwardDocument.type,
-            details: inwardDocument.details,
-            quantityInStock: inwardDocument.quantityTotal,
-            quantityTotal: inwardDocument.quantityTotal,
-            unit: inwardDocument.unit,
-            invoiceImage: inwardDocument.invoiceImage,
-            productImage: inwardDocument.productImage,
-            createdBy: inwardDocument.createdBy,
-        })
-
-        if(!asset){
-            throw new ApiError(500,"Something happened during asset creation")
-        }
-        allAssets.push(asset._id)
-
-        inwardDocument.assetReference = asset._id
-        await inwardDocument.save()
+        inward.assetReference.push(newAsset?._id)
+        await inward.save()
+        allAssets.push(newAsset)
     }
 
-    if(!(allInwards.length === allAssets.length)){
-        throw new ApiError(500,"Something went wrong while creating assets")
+    if(!(allAssets.length === inward.assets.length)){
+        throw new ApiError(500, "Something happened while vreating assets")
     }
-
+    
     return res.status(200)
     .json(
         new ApiResponse(
             200,
-            "Assets added successfully",
+            "Assets Created",
             allAssets
         )
     )
    
 })
 
+//Need to add an asset bin later on
 const deleteAssetById = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
@@ -226,108 +231,6 @@ const updateAssetById = asyncHandler(async(req,res)=>{
 
 
 export { getAllAssets, addAsset, deleteAssetById, updateAssetById, addAssetFromInward};
-//Ignore EVERYTHING below or you'll get confused
 
-//This will only check the assignment details and send the email to confirm
-// const assetAssignRequest= asyncHandler(async(req,res)=>{
-//     const { id } = req.params //Id of asset
-//     const { email , quantity} = req.body //User email and quantity to be assigned
-
-//     if (!id) {
-//         throw new ApiError(400, "Please provide asset ID");
-//     }
-
-//     // Validate ID (ensure it's a string or a valid ObjectId)
-//     if (typeof id !== "string" && !mongoose.Types.ObjectId.isValid(id)) {
-//         throw new ApiError(400, "Invalid asset ID");
-//     }
-
-//     if(!email){
-//         throw new ApiError(400,"Email cannot be empty")
-//     }
-
-//     if(!email.includes('@')){
-//         throw new ApiError(401,"Enter valid email")
-//     }
-
-//     const user = await User.findOne({
-//         email: email,
-//     }).select("-password -refreshToken")
-
-//     const asset = await Asset.findById(id)
-
-//     if(!user){
-//         throw new ApiError(401,"User doesn't exist")
-//     }
-
-//     if(!asset){
-//         throw new ApiError(401,"Asset doesn't exist")
-//     }
-
-//     if(!(quantity <= asset.quantityInStock)){
-//         throw new ApiError(401,"Cannot assign items more than the quantity in stock")
-//     }
-
-//     //Generating tokens after detail verification
-//     const data = {
-//         assetId: asset._id,
-//         userId: user._id,
-//         quantity
-//     }
-//     const token = generateToken(data)
-//     const emailContent = 
-//     `
-//     <h1>To verify the assignment of ${quantity} of ${asset.name}</h1>
-//     <br>
-//     <a href="${process.env.ASSET_TO_USER}/${token}" > Click here </a>
-//     `
-//     const emailinfo = await emailer(user.email,emailContent)
-
-//     if(emailinfo){
-//         return res.status(200)
-//         .json(
-//             new ApiResponse(
-//                 200,
-//                 "Email sent successfully",
-//                 null
-//             )
-//         )
-//     }else{
-//         throw new ApiError(500,"Something happened on our end while sending the email")
-//     }
-
-// })
-
-
-// const assetAssign = asyncHandler(async(req,res)=>{
-    
-//     const {assetId, userId, quantity} = req.assignmentData
-
-//     const asset = await Asset.findById(assetId)
-//     if(!asset){
-//         throw new ApiError(500,"Unable to fetch the asset requested")
-//     }
-
-//     const assigned = await Assignment.create({
-//         assetAssigned: assetId,
-//         assignedTo: userId,
-//         quantityAssigned: quantity
-//     })
-//     if(!assigned){
-//         throw new ApiError(500,"Some error happened while assigning the asset")
-//     }
-
-//     asset.quantityInStock = asset.quantityInStock - parseInt(quantity)
-
-//     return res.status(200)
-//     .json(
-//         new ApiResponse(
-//             200,
-//             "Asset assigned successfully",
-//             assigned
-//         )
-//     )
-
-// })
 
 
