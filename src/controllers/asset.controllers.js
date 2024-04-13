@@ -154,7 +154,7 @@ const addAssetFromInward = asyncHandler(async (req,res)=>{
    
 })
 
-//Need to add an asset bin later on
+
 const deleteAssetById = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
@@ -167,15 +167,21 @@ const deleteAssetById = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid asset ID");
     }
 
-    const asset = await Asset.findByIdAndDelete(id, {
-        new: true,
-    });
+    // Instead of deleting the entry we are setting its stock to 0, so if there were any assignments related to this asset they can still be returned
+    const asset = await Asset.findByIdAndUpdate(
+        id,
+        {
+            quantityInStock: 0,
+            quantityTotal: 0
+        },
+        {
+            new: true
+        }
+    )
 
-    if (!asset) {
+    if (!(asset.quantityInStock === 0 && asset.quantityTotal === 0)) {
         throw new ApiError(401, "Unable to delete");
     }
-
-    //Later need to add logic to delete all the assignments of this asset
 
     return res
         .status(200)

@@ -112,9 +112,7 @@ const assetAssign = asyncHandler(async(req,res)=>{
 
 })
 
-//This will create an asset un-assign request
-//Any signed in user can request for an asset un-asign
-//Then the request will go to AssetAdmin
+
 const assetUnAssignRequest = asyncHandler(async(req,res)=>{
     const { id } = req.params //This will be the assignment ID
 
@@ -180,6 +178,9 @@ const assetUnAssign = asyncHandler(async(req,res)=>{
     }
 
     asset.quantityInStock = asset.quantityInStock + parseInt(returnedQuantity)
+    if(asset.quantityTotal === 0){
+        asset.quantityTotal = parseInt(returnedQuantity)
+    }
     await asset.save()
 
     return res.status(200)
@@ -193,11 +194,33 @@ const assetUnAssign = asyncHandler(async(req,res)=>{
 })
 
 const getAssignmentsByAssetId = asyncHandler(async(req,res)=>{
+    const id = req.params?.id
 
-})
+    if(!id){
+        throw new ApiError(400, "Asset ID is required")
+    }
 
-const getAssignmentsByUserId = asyncHandler(async(req,res)=>{
+    // Validate ID (ensure it's a string or a valid ObjectId)
+    if (typeof id !== "string" && !mongoose.Types.ObjectId.isValid(id)) {
+        throw new ApiError(400, "Invalid asset ID");
+    }
+    
+    const assignments = await Assignment.find({
+        assetAssigned: id
+    })
 
+    if(assignments === undefined){
+        throw new ApiError(500,"Unable to fetch the assignments")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(
+            200,
+            "Assignments fetched successfully",
+            assignments
+        )
+    )
 })
 
 const getAllForUser = asyncHandler(async(req,res)=>{
@@ -215,7 +238,7 @@ const getAllForUser = asyncHandler(async(req,res)=>{
         assignedTo: user._id
     })
 
-    if(!assignments){
+    if(assignments === undefined){
         throw new ApiError(500,"Unable to fetch the assignments")
     }
 
@@ -223,12 +246,18 @@ const getAllForUser = asyncHandler(async(req,res)=>{
     .json(
         new ApiResponse(
             200,
-            "Fetched assignments if any",
+            "Assignments fetched successfully",
             assignments
         )
     )
     
 })
 
-//Test change 
-export {assetAssignRequest,assetAssign,assetUnAssignRequest,assetUnAssign,getAllForUser,getAssignmentsByAssetId,getAssignmentsByUserId}
+export {assetAssignRequest,assetAssign,assetUnAssignRequest,assetUnAssign,getAllForUser,getAssignmentsByAssetId}
+
+
+/*
+TODOs for assignments 
+- Need to create an assignment history (as we are not deleting the assets completely now we can reference their data in assignment history)
+
+*/
