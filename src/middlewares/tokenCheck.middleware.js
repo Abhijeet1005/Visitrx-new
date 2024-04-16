@@ -4,7 +4,6 @@ import { checkToken } from "../utils/tokenizer.js";
 import { Token } from "../models/token.model.js";
 
 const tokenCheckMiddleware = asyncHandler(async(req,res,next)=>{
-    //This function will verify the token and then call the assetAssign function in asset controller
 
     const {token} = req.params
     const checkForUsed = await Token.findOne({
@@ -27,7 +26,6 @@ const tokenCheckMiddleware = asyncHandler(async(req,res,next)=>{
 
     req.tokenData = decodedToken
     next()
-    //Expect the directly assigning function after this
 })
 
 export {tokenCheckMiddleware}
