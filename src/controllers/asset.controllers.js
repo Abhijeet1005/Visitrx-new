@@ -154,7 +154,6 @@ const addAssetFromInward = asyncHandler(async (req,res)=>{
    
 })
 
-
 const deleteAssetById = asyncHandler(async (req, res) => {
     const { id } = req.params;
 

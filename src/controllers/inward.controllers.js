@@ -115,7 +115,7 @@ const addInward = asyncHandler(async(req,res)=>{
     
     if (emailSent) {
         // Email sent successfully
-        return res.status(200).json(new ApiResponse(200, "Email sent successfully", null));
+        return res.status(200).json(new ApiResponse(200, "Email sent successfully", inward));
     } else {
         // Failed to send email
         throw new ApiError(500, "Something happened on our end while sending the email");
