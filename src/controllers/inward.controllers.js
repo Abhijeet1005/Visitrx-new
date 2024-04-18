@@ -25,7 +25,6 @@ const getAllInward = asyncHandler(async(req,res)=>{
     )
 })
 
-
 //Need to take and store the values in the form similar to the form for addAsset
 //Then we can just pass a single inward reference and proceed with the asset addition 
 //and need to have some extra inward fields as per the old inward form and a reference array to store all the asset reference 
@@ -56,12 +55,12 @@ const addInward = asyncHandler(async(req,res)=>{
     let cloudinaryInvoiceImage = null;
     let cloudinaryProductImage = null;
 
-    if (req.files.productImage && req.files.productImage[0] && req.files.productImage[0].path) {
+    if (req.files?.productImage && req.files?.productImage[0] && req.files?.productImage[0]?.path) {
         const productImagePath = req.files.productImage[0].path;
         cloudinaryProductImage = await uploadOnCloudinary(productImagePath);
     }
     
-    if (req.files.invoicePhoto && req.files.invoicePhoto[0] && req.files.invoicePhoto[0].path) {
+    if (req.files?.invoicePhoto && req.files?.invoicePhoto[0] && req.files?.invoicePhoto[0]?.path) {
         const invoicePhotoPath = req.files.invoicePhoto[0].path;
         cloudinaryInvoiceImage = await uploadOnCloudinary(invoicePhotoPath);
     }
