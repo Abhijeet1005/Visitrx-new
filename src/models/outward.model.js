@@ -43,4 +43,11 @@ const outwardSchema = new Schema({
 
 },{timestamps: true})
 
+outwardSchema.pre(/^find/, function(next) {
+    this.populate({
+        path: "assetId",
+    });
+    next();
+});
+
 export const Outward = mongoose.model("Outward",outwardSchema)

@@ -80,6 +80,14 @@ const assetSchema = new Schema({
 },{timestamps: true})
 
 
+assetSchema.pre(/^find/, function(next) {
+    this.populate({
+        path: "createdBy",
+        select: "-password -refreshToken"
+    });
+    next();
+});
+
 export const Asset = mongoose.model("Asset",assetSchema)
 
  
