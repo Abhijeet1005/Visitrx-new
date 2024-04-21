@@ -31,7 +31,8 @@ const outwardCreationRequest = asyncHandler(async (req,res)=>{
     //Here we will take the outward details (assetId in params, rest in body)
     //Create a new email request to security admin to add a new outward entry
 
-    const { id } = req.params
+    // const { id } = req.params
+    const { id } = req.body
 
     const { quantity, sendingToContact, sendingToName, details, returnType} = req.body
 
@@ -159,7 +160,8 @@ const outwardReturnRequest = asyncHandler(async (req,res)=>{
     **For now we will only accept the return with same quantities as when we sent them, but in future we can implement partial returns
     */
    
-    const { id } = req.params //This will be the outward ID
+    // const { id } = req.params //This will be the outward ID
+    const { id } = req.body
 
     const { currentDateTime } = req.body
 

@@ -8,7 +8,7 @@ import { SecurityAdmincheck } from "../middlewares/securityAdmin.middleware.js";
 const router = Router()
 
 router.route("/").get(JWTcheck,allAdminCheck,getAllOutwards)
-router.route("/addRequest/:id").post(JWTcheck,AssetAdmincheck,outwardCreationRequest) //Here we are expecting an asset ID
-router.route("/returnRequest/:id").post(JWTcheck,SecurityAdmincheck,outwardReturnRequest) //Here we are expecting outward ID
+router.route("/addRequest").post(JWTcheck,AssetAdmincheck,outwardCreationRequest) //Here we are expecting an asset ID
+router.route("/returnRequest").post(JWTcheck,SecurityAdmincheck,outwardReturnRequest) //Here we are expecting outward ID
 
 export default router
