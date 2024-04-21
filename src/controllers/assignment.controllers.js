@@ -112,7 +112,6 @@ const assetAssign = asyncHandler(async(req,res)=>{
 
 })
 
-
 const assetUnAssignRequest = asyncHandler(async(req,res)=>{
     const { id } = req.params //This will be the assignment ID
 
@@ -252,6 +251,17 @@ const getAllForUser = asyncHandler(async(req,res)=>{
     )
     
 })
+
+const getAllForDepartment = asyncHandler(async (req,res)=>{
+    //We'll fetch the admin name passed from the middleware
+    //If the adming is asset admin or app admin we pass all the assignments
+    //otherwise we pass the assignments with {admin department}Employee role assignments
+
+    //For this we need to write a pipeline with a foreign lookup of assignedTo field in the User database then apply filter to filter out the results based on role
+    
+})
+
+
 
 export {assetAssignRequest,assetAssign,assetUnAssignRequest,assetUnAssign,getAllForUser,getAssignmentsByAssetId}
 

@@ -11,4 +11,6 @@ router.route("/unassign/:id").post(JWTcheck,assetUnAssignRequest) //This is taki
 
 router.route("/getAllForUser/:email").get(JWTcheck,getAllForUser) //We will be using email directly because they are unique
 
+router.route("/getAllForDepartment").get(JWTcheck,/* getAllForDepartment function from assignment controller */) //This wil automatically fetch the department from logged in user and send the employee assignments
+
 export default router
