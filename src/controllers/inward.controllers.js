@@ -106,7 +106,7 @@ const addInward = asyncHandler(async(req,res)=>{
     assets.forEach(product => {
         emailContent += `<p>Product: ${product.productName}, Quantity: ${product.quantityTotal} ${product.unit}</p>`;
     })
-    emailContent += `<br><a href="${process.env.SECURITY_TO_ASSET}/${token}">Click Here</a>`;
+    emailContent += `<br><a href="${process.env.SECURITY_TO_ASSET}/?token=${token}">Click Here</a>`;
     
     const emailSubject = "Inward to asset addition verification email";
 

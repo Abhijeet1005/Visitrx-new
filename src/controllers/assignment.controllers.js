@@ -58,7 +58,7 @@ const assetAssignRequest= asyncHandler(async(req,res)=>{
     const emailContent = `
     <h1>To verify the assignment of ${quantity} of ${asset.productName}</h1>
     <br>
-    <a href="${process.env.ASSET_TO_USER}/${token}">Click Here</a>
+    <a href="${process.env.ASSET_TO_USER}/?token=${token}">Click Here</a>
     `;
     const emailSubject = "Assignment Email";
 
