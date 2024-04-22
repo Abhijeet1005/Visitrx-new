@@ -11,7 +11,6 @@ const assetSchema = new Schema({
     returnType: {
         type: String,
         enum: ["Returnable","Non-Returnable"],
-        required: true
     },
 
     type: {
