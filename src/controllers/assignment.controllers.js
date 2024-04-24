@@ -58,7 +58,7 @@ const assetAssignRequest= asyncHandler(async(req,res)=>{
     const emailContent = `
     <h1>To verify the assignment of ${quantity} of ${asset.productName}</h1>
     <br>
-    <a href="${process.env.ASSET_TO_USER}/?token=${token}">Click Here</a>
+    <a href="${process.env.ASSET_TO_USER}/${token}">Click Here</a>
     `;
     const emailSubject = "Assignment Email";
 
@@ -254,16 +254,35 @@ const getAllForUser = asyncHandler(async(req,res)=>{
 
 const getAllForDepartment = asyncHandler(async (req,res)=>{
     //We'll fetch the admin name passed from the middleware
-    //If the adming is asset admin or app admin we pass all the assignments
+    //If the admin is asset admin or app admin we pass all the assignments
     //otherwise we pass the assignments with {admin department}Employee role assignments
 
     //For this we need to write a pipeline with a foreign lookup of assignedTo field in the User database then apply filter to filter out the results based on role
-    
+
+    const assignments = await Assignment.find();
+
+    const filteredAssignments = assignments.filter(doc => {
+        return doc.assignedTo && doc.assignedTo.role === `${req.department}Employee`;
+    });
+
+    if(!assignments){
+        throw new ApiError(401, "Unable to fetch assignments")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(
+            200,
+            `Assignments for ${req.department} department fetched successfully`,
+            filteredAssignments
+        )
+    )
+
 })
 
 
 
-export {assetAssignRequest,assetAssign,assetUnAssignRequest,assetUnAssign,getAllForUser,getAssignmentsByAssetId}
+export {assetAssignRequest,assetAssign,assetUnAssignRequest,assetUnAssign,getAllForUser,getAssignmentsByAssetId,getAllForDepartment}
 
 
 /*

@@ -28,4 +28,15 @@ const assignSchema = new Schema({
 
 },{timestamps: true})
 
+assignSchema.pre(/^find/, function(next) {
+    this.populate({
+        path: "assignedTo",
+        select: "-password -refreshToken"
+    });
+    this.populate({
+        path: "assetAssigned",
+    });
+    next();
+});
+
 export const Assignment = mongoose.model("Assignment", assignSchema)

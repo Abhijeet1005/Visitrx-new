@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { JWTcheck } from "../middlewares/auth.middleware.js";
-import { assetAssignRequest, assetUnAssignRequest, getAllForUser } from "../controllers/assignment.controllers.js";
+import { assetAssignRequest, assetUnAssignRequest, getAllForDepartment, getAllForUser } from "../controllers/assignment.controllers.js";
 import { AssetAdmincheck } from "../middlewares/assetAdmin.middleware.js";
+import { adminDepartment } from "../middlewares/adminDepartment.middleware.js";
 
 const router = Router();
 
@@ -11,6 +12,6 @@ router.route("/unassign/:id").post(JWTcheck,assetUnAssignRequest) //This is taki
 
 router.route("/getAllForUser/:email").get(JWTcheck,getAllForUser) //We will be using email directly because they are unique
 
-router.route("/getAllForDepartment").get(JWTcheck,/* getAllForDepartment function from assignment controller */) //This wil automatically fetch the department from logged in user and send the employee assignments
+router.route("/getAllForDepartment").get(JWTcheck,adminDepartment,getAllForDepartment) //This wil automatically fetch the department from logged in user and send the employee assignments
 
 export default router
