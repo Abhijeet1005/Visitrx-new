@@ -22,6 +22,7 @@ import assetRouter from "./routes/asset.routes.js"
 import tokenRouter from "./routes/token.routes.js"
 import inwardRouter from "./routes/inward.routes.js"
 import outwardRouter from "./routes/outward.routes.js"
+import checkInRouter from "./routes/checkIn.routes.js"
 import assignmentRouter from "./routes/assignment.routes.js"
 import errorHandler from "./middlewares/errorHandler.middleware.js";
 
@@ -35,6 +36,7 @@ app.use("/api/token",tokenRouter)
 app.use("/api/inward",inwardRouter)
 app.use("/api/outward",outwardRouter)
 app.use("/api/assignment",assignmentRouter)
+app.use("/api/checkIn",checkInRouter)
 
 app.use(errorHandler)
 

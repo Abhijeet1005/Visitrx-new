@@ -3,6 +3,9 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { CheckIn } from "../models/checkIn.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { generateToken } from "../utils/tokenizer.js";
+import { User } from "../models/user.model.js";
+import { emailer } from "../utils/emailer.js";
 
 const getAllCheckIns = asyncHandler(async (req,res)=>{
     const checkIns = await CheckIn.find()
@@ -23,6 +26,63 @@ const getAllCheckIns = asyncHandler(async (req,res)=>{
 
 const checkInRequest = asyncHandler(async (req,res)=>{
     //This will send a checkIn add request an if the token gets verified we call addCheckIn (and pass the checkIn time)
+
+    const { guest, personName, comingFrom, contactNo, meetingWith, floor, department, purpose, remark,} = req.body
+
+    //check for meetingWith, personName, contactNo
+
+    if(!(personName && contactNo && meetingWith)){
+        throw new ApiError(400, "Fill the necessary fields")
+    }
+
+    //check for image
+
+    let cloudinaryImage = null;
+
+    if (req.file?.path) {
+        const image = req.file.path;
+        cloudinaryImage = await uploadOnCloudinary(image);
+    }
+
+    const data = {
+        guest,
+        personName,
+        comingFrom,
+        contactNo,
+        meetingWith,
+        floor,
+        department,
+        purpose,
+        remark,
+        cloudinaryImage : cloudinaryImage.url
+    }
+
+    const securityAdmin = await User.find({
+        role: "SecurityAdmin",
+    })
+
+    if(!securityAdmin){
+        throw new ApiError(500, "Unable to find a security admin")
+    }
+
+    const token = generateToken(data)
+    const emailContent = 
+    `
+    <h1>To verify the check-in of ${personName} with contact ${contactNo}</h1>
+    <br>
+    <a href="${process.env.USER_CHECKIN}/${token}">Click Here</a>
+    `
+    const emailSubject = "Check-in request Email";
+
+    const emailSent = await emailer(securityAdmin[0].email, emailSubject, emailContent);
+    
+    if (emailSent) {
+        // Email sent successfully
+        return res.status(200).json(new ApiResponse(200, "Email sent successfully", null));
+    } else {
+        // Failed to send email
+        throw new ApiError(500, "Something happened on our end while sending the email");
+    }
 
 })
 
@@ -56,7 +116,7 @@ const addCheckIn = asyncHandler(async (req,res)=>{
         department,
         purpose,
         remark,
-        image: cloudinaryImage
+        image: cloudinaryImage?.url
     })
 
     if(!checkIn){
@@ -75,6 +135,51 @@ const addCheckIn = asyncHandler(async (req,res)=>{
     
 })
 
+//This will be called from the token's checkin request route
+const addCheckInFromToken = asyncHandler( async (req,res)=>{
+    const {
+        guest,
+        personName,
+        comingFrom,
+        contactNo,
+        meetingWith,
+        floor,
+        department,
+        purpose,
+        remark,
+        cloudinaryImage
+    } = req.tokenData
+
+
+    const checkIn = await CheckIn.create({
+        guest,
+        personName,
+        comingFrom,
+        contactNo,
+        meetingWith,
+        floor,
+        department,
+        purpose,
+        remark,
+        image: cloudinaryImage || null
+    })
+
+    if(!checkIn){
+        throw new ApiError(500,"Unable to create check-in")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(
+            200,
+            "Check-in created successfully",
+            checkIn
+        )
+    )
+
+
+})
+
 const updateCheckIn = asyncHandler(async (req,res)=>{
     const { id } = req.body
 
@@ -87,9 +192,9 @@ const updateCheckIn = asyncHandler(async (req,res)=>{
         throw new ApiError(400, "Invalid check-in ID");
     }
 
-    const { guest, personName, comingFrom, contactNo, meetingWith, floor, department, purpose, remark,} = req.body
+    const { guest, personName, comingFrom, contactNo, meetingWith, floor, department, purpose, remark} = req.body
 
-    const checkIn = await CheckIn.findByIdAndUpdate({
+    const checkIn = await CheckIn.findByIdAndUpdate(id,{
         guest,
         personName,
         comingFrom,
@@ -99,6 +204,8 @@ const updateCheckIn = asyncHandler(async (req,res)=>{
         department,
         purpose,
         remark,
+    },{
+        new: true
     })
 
     if(!checkIn){
@@ -146,4 +253,4 @@ const checkOut = asyncHandler(async (req,res)=>{
 
 })
 
-export { getAllCheckIns,checkInRequest,addCheckIn,updateCheckIn,checkOut }
+export { getAllCheckIns,checkInRequest,addCheckIn,updateCheckIn,checkOut,addCheckInFromToken}
