@@ -85,7 +85,7 @@ const outwardCreationRequest = asyncHandler(async (req,res)=>{
     `
     <h1>To verify the sending of ${quantity} of ${asset.productName} to ${sendingToName || "Person"} with contact ${sendingToContact}</h1>
     <br>
-    <a href="${process.env.ASSET_TO_SECURITY}/${token}">Click Here</a>
+    <a href="${process.env.ASSET_TO_SECURITY}?token=${token}">Click Here</a>
     `
     const emailSubject = "Outward Email";
 
@@ -208,7 +208,7 @@ const outwardReturnRequest = asyncHandler(async (req,res)=>{
     `
     <h1>To verify the return of ${outward.quantity} of ${asset.productName} by ${ outward.sendingToName || " a Person"} with contact ${outward.sendingToContact}</h1>
     <br>
-    <a href="${process.env.OUTWARD_RETURN}/${token}">Click Here</a>
+    <a href="${process.env.OUTWARD_RETURN}?token=${token}">Click Here</a>
     `
     const emailSubject = "Outward Return Email";
 

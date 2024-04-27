@@ -55,9 +55,9 @@ const addAsset = asyncHandler(async (req, res) => {
         cloudinaryProductImage = await uploadOnCloudinary(productImagePath);
     }
     
-    if (req.files && req.files?.invoicePhoto && req.files?.invoicePhoto[0] && req.files?.invoicePhoto[0]?.path) {
-        const invoicePhotoPath = req.files.invoicePhoto[0].path;
-        cloudinaryInvoiceImage = await uploadOnCloudinary(invoicePhotoPath);
+    if (req.files && req.files?.invoiceImage && req.files?.invoiceImage[0] && req.files?.invoiceImage[0]?.path) {
+        const invoiceImagePath = req.files.invoiceImage[0].path;
+        cloudinaryInvoiceImage = await uploadOnCloudinary(invoiceImagePath);
     }
     
 

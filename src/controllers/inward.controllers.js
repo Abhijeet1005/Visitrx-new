@@ -60,9 +60,9 @@ const addInward = asyncHandler(async(req,res)=>{
         cloudinaryProductImage = await uploadOnCloudinary(productImagePath);
     }
     
-    if (req.files?.invoicePhoto && req.files?.invoicePhoto[0] && req.files?.invoicePhoto[0]?.path) {
-        const invoicePhotoPath = req.files.invoicePhoto[0].path;
-        cloudinaryInvoiceImage = await uploadOnCloudinary(invoicePhotoPath);
+    if (req.files?.invoiceImage && req.files?.invoiceImage[0] && req.files?.invoiceImage[0]?.path) {
+        const invoiceImagePath = req.files.invoiceImage[0].path;
+        cloudinaryInvoiceImage = await uploadOnCloudinary(invoiceImagePath);
     }
 
     const inward = await Inward.create({

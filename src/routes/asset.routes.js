@@ -10,7 +10,7 @@ router.route("/").get(JWTcheck,AssetAdmincheck,getAllAssets); // Get all assets
 
 router.route("/add").post(JWTcheck,AssetAdmincheck,upload.fields([
     {
-        name: "invoicePhoto",
+        name: "invoiceImage",
         maxCount: 1
     },
     {

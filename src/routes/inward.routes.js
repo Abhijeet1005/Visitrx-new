@@ -10,7 +10,7 @@ const router = Router()
 router.route("/").get(JWTcheck,SecurityAdmincheck,getAllInward)
 router.route("/add").post(JWTcheck,SecurityAdmincheck,upload.fields([
     {
-        name: "invoicePhoto",
+        name: "invoiceImage",
         maxCount: 1
     },
     {
