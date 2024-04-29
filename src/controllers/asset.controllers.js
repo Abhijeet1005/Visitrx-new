@@ -12,7 +12,7 @@ import { Inward } from "../models/inward.model.js";
 //Apply auth check
 const getAllAssets = asyncHandler(async (req, res) => {
     //Later on we can apply aggregation pagination here for bigger database 
-    const assets = await Asset.find();
+    const assets = await Asset.find({ quantityTotal: { $gt: 0 } });
 
     if (!assets) {
         throw new ApiError(500, "Something went wrong on our end");
