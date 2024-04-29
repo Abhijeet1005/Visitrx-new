@@ -3,12 +3,12 @@ import mongoose, { Schema } from "mongoose";
 const checkInSchemna = new Schema({
 
     checkIn: {
-        type: Date,
-        default: Date.now
+        type: String,
+        default: () => new Date().toISOString()
     },
 
     checkOut: {
-        type: Date,
+        type: String,
     },
 
     guest: {
@@ -36,7 +36,7 @@ const checkInSchemna = new Schema({
     },
 
     floor: {
-        type: Number
+        type: String
     },
 
     department: {
