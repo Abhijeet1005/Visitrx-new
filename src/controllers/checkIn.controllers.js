@@ -192,9 +192,11 @@ const updateCheckIn = asyncHandler(async (req,res)=>{
         throw new ApiError(400, "Invalid check-in ID");
     }
 
-    const { guest, personName, comingFrom, contactNo, meetingWith, floor, department, purpose, remark} = req.body
+    const { guest, personName, comingFrom, contactNo, meetingWith, floor, department, purpose, remark, checkOut, checkIn} = req.body
 
-    const checkIn = await CheckIn.findByIdAndUpdate(id,{
+    const checkInDoc = await CheckIn.findByIdAndUpdate(id,{
+        checkIn,
+        checkOut,
         guest,
         personName,
         comingFrom,
@@ -208,7 +210,7 @@ const updateCheckIn = asyncHandler(async (req,res)=>{
         new: true
     })
 
-    if(!checkIn){
+    if(!checkInDoc){
         throw new ApiError(500,"Unable to update the check-in")
     }
 
@@ -217,7 +219,7 @@ const updateCheckIn = asyncHandler(async (req,res)=>{
         new ApiResponse(
             200,
             "Check-in updated successfully",
-            checkIn
+            checkInDoc
         )
     )
 })
