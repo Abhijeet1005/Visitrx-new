@@ -181,7 +181,7 @@ const addCheckInFromToken = asyncHandler( async (req,res)=>{
 })
 
 const updateCheckIn = asyncHandler(async (req,res)=>{
-    const { id } = req.body
+    const { id } = req.params;
 
     if (!id) {
         throw new ApiError(400, "Please provide check-in ID");

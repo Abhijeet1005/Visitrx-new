@@ -13,7 +13,7 @@ router.route("/add").post(JWTcheck,SecurityAdmincheck,upload.single("image"),add
 
 router.route("/addRequest").post(JWTcheck,SecurityAdmincheck,upload.single("image"),checkInRequest)
 
-router.route("/update").post(JWTcheck,SecurityAdmincheck,updateCheckIn)
+router.route("/update/:id").post(JWTcheck,SecurityAdmincheck,updateCheckIn)
 
 router.route("/checkOut").post(JWTcheck,SecurityAdmincheck,checkOut)
 
