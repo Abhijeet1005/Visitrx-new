@@ -274,7 +274,8 @@ const getAllForDepartment = asyncHandler(async (req,res)=>{
         new ApiResponse(
             200,
             `Assignments for ${req.department} department fetched successfully`,
-            filteredAssignments
+            // filteredAssignments
+            assignments
         )
     )
 
