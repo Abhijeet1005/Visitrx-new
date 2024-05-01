@@ -20,7 +20,7 @@ const userSchema = new  Schema({
     },
     role: {
         type: String,
-        enum: ["Employee","AssetAdmin","SecurityAdmin","AppAdmin","AccountsAdmin","AccountsEmployee"], // We can add more xxAdmin and xxEmployee values
+        enum: ["Employee","AssetAdmin","SecurityAdmin","AppAdmin","AccountsAdmin","AccountsEmployee","IT", "Sales"], // We can add more xxAdmin and xxEmployee values
         default: "Employee"
     },
 
