@@ -24,6 +24,10 @@ const userSchema = new  Schema({
         default: "Employee"
     },
 
+    department: {
+        type: String,
+    },
+
     avatar: {
         type: String,
         default: "https://picsum.photos/id/555/300/300"

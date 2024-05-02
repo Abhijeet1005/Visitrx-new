@@ -29,7 +29,7 @@ const cookieOptions = {
 }
 
 const registerUser = asyncHandler( async (req,res)=>{
-    const {fullname,email,password,role} = req.body
+    const {fullname,email,password,role, department} = req.body
 
 
     //check that required fields are not empty 
@@ -60,6 +60,7 @@ const registerUser = asyncHandler( async (req,res)=>{
         email,
         password,
         role,
+        department,
     })
     
     //Now we send data of the newly created use but excluding the password and refresh token
