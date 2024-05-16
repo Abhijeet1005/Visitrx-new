@@ -274,16 +274,32 @@ const getAllForDepartment = asyncHandler(async (req,res)=>{
         new ApiResponse(
             200,
             `Assignments for ${req.department} department fetched successfully`,
-            // filteredAssignments
-            assignments
+            filteredAssignments,
+            // assignments
         )
     )
 
 })
 
+const getAllAssignments = asyncHandler(async (req,res)=>{
+    const assignments = await Assignment.find();
+
+    if(!assignments){
+        throw new ApiError(401, "Unable to fetch assignments")
+    }
+
+    return res.json(
+        new ApiResponse(
+            200,
+            "Assignments fetched successfully",
+            assignments
+        )
+    )
+})
 
 
-export {assetAssignRequest,assetAssign,assetUnAssignRequest,assetUnAssign,getAllForUser,getAssignmentsByAssetId,getAllForDepartment}
+
+export {assetAssignRequest,assetAssign,assetUnAssignRequest,assetUnAssign,getAllForUser,getAssignmentsByAssetId,getAllForDepartment,getAllAssignments}
 
 
 /*
