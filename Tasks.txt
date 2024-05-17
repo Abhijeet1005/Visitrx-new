@@ -1,0 +1,3 @@
+-- Assignments -- 
++ add a new controller which will be called by department admins to enter and remove the names of employee to which asset is assigned
++ this will add new fields to the assignment database named "employee" and "isAssigned" boolean 
