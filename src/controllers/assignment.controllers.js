@@ -13,6 +13,7 @@ const assetAssignRequest= asyncHandler(async(req,res)=>{
     const { id } = req.params //Id of asset
     const { email , quantity} = req.body //User email and quantity to be assigned
 
+
     if (!id) {
         throw new ApiError(400, "Please provide asset ID");
     }
