@@ -49,7 +49,7 @@ const getAllEmployees = asyncHandler(async (req,res)=>{
 
 const deleteEmployee = asyncHandler(async (req,res)=>{
 
-    const { employeeNumber } = req.body
+    const { employeeNumber } = req.params
 
     if(!employeeNumber){
         throw new ApiError( 400, "Employee number is required" )
