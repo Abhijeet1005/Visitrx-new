@@ -263,7 +263,7 @@ const getAllForDepartment = asyncHandler(async (req,res)=>{
     const assignments = await Assignment.find();
 
     const filteredAssignments = assignments.filter(doc => {
-        return doc.assignedTo && doc.assignedTo.role === `${req.department}Employee`;
+        return doc.assignedTo && doc.assignedTo.role === `${req.department}Head`;
     });
 
     if(!assignments){
