@@ -8,6 +8,10 @@ const assetSchema = new Schema({
         trim: true,
     },
 
+    modelNo: {
+        type: String,
+    },
+
     returnType: {
         type: String,
         enum: ["Returnable","Non-Returnable"],
