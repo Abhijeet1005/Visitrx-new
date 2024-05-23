@@ -238,6 +238,8 @@ const checkOut = asyncHandler(async (req,res)=>{
 
     const checkIn = await CheckIn.findByIdAndUpdate(id,{
         checkOut: new Date().toISOString()
+    },{
+        new: true
     })
 
     if(!checkIn){
