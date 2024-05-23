@@ -237,7 +237,7 @@ const checkOut = asyncHandler(async (req,res)=>{
     }
 
     const checkIn = await CheckIn.findByIdAndUpdate(id,{
-        checkOut: Date.now()
+        checkOut: new Date().toISOString()
     })
 
     if(!checkIn){
