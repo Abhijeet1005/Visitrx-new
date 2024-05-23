@@ -237,7 +237,9 @@ const checkOut = asyncHandler(async (req,res)=>{
     }
 
     const checkIn = await CheckIn.findByIdAndUpdate(id,{
-        checkOut: Date.now()
+        checkOut: new Date().toISOString()
+    },{
+        new: true
     })
 
     if(!checkIn){
@@ -255,4 +257,34 @@ const checkOut = asyncHandler(async (req,res)=>{
 
 })
 
-export { getAllCheckIns,checkInRequest,addCheckIn,updateCheckIn,checkOut,addCheckInFromToken}
+const deleteCheckIn = asyncHandler(async (req,res)=>{
+
+    const { id } = req.params
+
+    if (!id) {
+        throw new ApiError(400, "Please provide check-in ID");
+    }
+
+    // Validate ID (ensure it's a string or a valid ObjectId)
+    if (typeof id !== "string" && !mongoose.Types.ObjectId.isValid(id)) {
+        throw new ApiError(400, "Invalid check-in ID");
+    }
+
+    const checkIn = await CheckIn.findByIdAndDelete(id)
+
+    if(!checkIn){
+        throw new ApiError(500,"Unable to delete check-in")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(
+            200,
+            "Check-in deleted successfully",
+            checkIn
+        )
+    )
+
+})
+
+export { getAllCheckIns,checkInRequest,addCheckIn,updateCheckIn,checkOut,addCheckInFromToken,deleteCheckIn}

@@ -23,20 +23,25 @@ import tokenRouter from "./routes/token.routes.js"
 import inwardRouter from "./routes/inward.routes.js"
 import outwardRouter from "./routes/outward.routes.js"
 import checkInRouter from "./routes/checkIn.routes.js"
+import movementRouter from "./routes/movement.routes.js"
 import assignmentRouter from "./routes/assignment.routes.js"
+import employeeRouter from "./routes/employee.routes.js"
 import errorHandler from "./middlewares/errorHandler.middleware.js";
+
 
 
 
 
 //Handling route control
 app.use("/api/user",userRouter)
+app.use("/api/employee",employeeRouter)
 app.use("/api/asset",assetRouter)
 app.use("/api/token",tokenRouter)
 app.use("/api/inward",inwardRouter)
 app.use("/api/outward",outwardRouter)
 app.use("/api/assignment",assignmentRouter)
 app.use("/api/checkIn",checkInRouter)
+app.use("/api/movement",movementRouter)
 
 app.use(errorHandler)
 

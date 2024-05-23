@@ -21,14 +21,14 @@ try {
     //     throw new ApiError(500,"Logged in user is not an app or asset admin")
     // }
 
-    let adminCheck = user.role.includes("Admin")
+    let adminCheck = user.role.includes("Head")
     req.department = null
 
     if(!adminCheck){
-        throw new ApiError(400, "Logged-in user is not an admin")
+        throw new ApiError(400, "Logged-in user is not a Head")
     }
 
-    req.department = user.role.trim().replace("Admin", "")
+    req.department = user.role.trim().replace("Head", "")
     console.log(req.department)
 
     next()

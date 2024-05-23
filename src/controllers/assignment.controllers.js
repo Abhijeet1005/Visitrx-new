@@ -13,6 +13,7 @@ const assetAssignRequest= asyncHandler(async(req,res)=>{
     const { id } = req.params //Id of asset
     const { email , quantity} = req.body //User email and quantity to be assigned
 
+
     if (!id) {
         throw new ApiError(400, "Please provide asset ID");
     }
@@ -262,7 +263,7 @@ const getAllForDepartment = asyncHandler(async (req,res)=>{
     const assignments = await Assignment.find();
 
     const filteredAssignments = assignments.filter(doc => {
-        return doc.assignedTo && doc.assignedTo.role === `${req.department}Employee`;
+        return doc.assignedTo && doc.assignedTo.role === `${req.department}Head`;
     });
 
     if(!assignments){
@@ -274,16 +275,32 @@ const getAllForDepartment = asyncHandler(async (req,res)=>{
         new ApiResponse(
             200,
             `Assignments for ${req.department} department fetched successfully`,
-            // filteredAssignments
-            assignments
+            filteredAssignments,
+            // assignments
         )
     )
 
 })
 
+const getAllAssignments = asyncHandler(async (req,res)=>{
+    const assignments = await Assignment.find();
+
+    if(!assignments){
+        throw new ApiError(401, "Unable to fetch assignments")
+    }
+
+    return res.json(
+        new ApiResponse(
+            200,
+            "Assignments fetched successfully",
+            assignments
+        )
+    )
+})
 
 
-export {assetAssignRequest,assetAssign,assetUnAssignRequest,assetUnAssign,getAllForUser,getAssignmentsByAssetId,getAllForDepartment}
+
+export {assetAssignRequest,assetAssign,assetUnAssignRequest,assetUnAssign,getAllForUser,getAssignmentsByAssetId,getAllForDepartment,getAllAssignments}
 
 
 /*

@@ -1,0 +1,9 @@
+-- Assignments -- 
++ ❌ add a new controller which will be called by department admins to enter and remove the names of employee to which asset is assigned
++ ❌ this will add new fields to the assignment database named "employee" and "isAssigned" boolean 
++ ✅ modify department middleware to use .include("Head") 
++ ✅modify assignment fetch for department(along with using "Head" instead of "Admin")
+
+-- Employees(not Users) --
++ This will be a separate collection where we will have employee names just for reference
++ make sure to delete the previous entries in users of VisitrxNew database and add the new employee entries

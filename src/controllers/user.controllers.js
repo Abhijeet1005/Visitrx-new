@@ -29,11 +29,10 @@ const cookieOptions = {
 }
 
 const registerUser = asyncHandler( async (req,res)=>{
-    const {fullname,email,password,role, department} = req.body
-
+    let {fullname,email,password,role, department} = req.body
 
     //check that required fields are not empty 
-    if(!(fullname && email && password)){
+    if(!(fullname && email &&password)){
         throw new ApiError(400,"All fields are required")
     }
 
@@ -52,7 +51,7 @@ const registerUser = asyncHandler( async (req,res)=>{
     })
 
     if(existingUser){
-        throw new ApiError(409, "username already taken")
+        throw new ApiError(409, "Email already taken")
     }
 
     const user = await User.create({
