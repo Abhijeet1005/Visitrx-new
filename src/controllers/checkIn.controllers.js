@@ -257,4 +257,25 @@ const checkOut = asyncHandler(async (req,res)=>{
 
 })
 
-export { getAllCheckIns,checkInRequest,addCheckIn,updateCheckIn,checkOut,addCheckInFromToken}
+const deleteCheckIn = asyncHandler(async (req,res)=>{
+
+    const { id } = req.params
+
+    const checkIn = await CheckIn.findByIdAndDelete(id)
+
+    if(!checkIn){
+        throw new ApiError(500,"Unable to delete check-in")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(
+            200,
+            "Check-in deleted successfully",
+            checkIn
+        )
+    )
+
+})
+
+export { getAllCheckIns,checkInRequest,addCheckIn,updateCheckIn,checkOut,addCheckInFromToken,deleteCheckIn}
