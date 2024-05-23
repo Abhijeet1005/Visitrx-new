@@ -261,6 +261,15 @@ const deleteCheckIn = asyncHandler(async (req,res)=>{
 
     const { id } = req.params
 
+    if (!id) {
+        throw new ApiError(400, "Please provide check-in ID");
+    }
+
+    // Validate ID (ensure it's a string or a valid ObjectId)
+    if (typeof id !== "string" && !mongoose.Types.ObjectId.isValid(id)) {
+        throw new ApiError(400, "Invalid check-in ID");
+    }
+
     const checkIn = await CheckIn.findByIdAndDelete(id)
 
     if(!checkIn){
