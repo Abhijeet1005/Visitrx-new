@@ -9,12 +9,12 @@ const movementSchema = new Schema({
 
     checkOut: {
         type: String,
-        default: () => new Date().toISOString()
+        // default: () => new Date().toISOString()
     },
 
-    employees: {
-        type: Array,
-        default: []
+    employee: {
+        type: String,
+        required: true
     },
 
     workFor: {

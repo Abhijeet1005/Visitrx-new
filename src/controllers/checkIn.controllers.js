@@ -27,7 +27,7 @@ const getAllCheckIns = asyncHandler(async (req,res)=>{
 const checkInRequest = asyncHandler(async (req,res)=>{
     //This will send a checkIn add request an if the token gets verified we call addCheckIn (and pass the checkIn time)
 
-    const { guest, personName, comingFrom, contactNo, meetingWith, floor, department, purpose, remark,} = req.body
+    const { guest, personName, comingFrom, contactNo, meetingWith, floor, department, purpose, remark, checkIn} = req.body
 
     //check for meetingWith, personName, contactNo
 
@@ -45,6 +45,7 @@ const checkInRequest = asyncHandler(async (req,res)=>{
     }
 
     const data = {
+        checkIn,
         guest,
         personName,
         comingFrom,
@@ -89,7 +90,7 @@ const checkInRequest = asyncHandler(async (req,res)=>{
 const addCheckIn = asyncHandler(async (req,res)=>{
     //This will just read the req and add the checkIn (can be called from checkInRequest or directly if the logged in user is security admin)
 
-    const { guest, personName, comingFrom, contactNo, meetingWith, floor, department, purpose, remark,} = req.body
+    const { guest, personName, comingFrom, contactNo, meetingWith, floor, department, purpose, remark, checkIn} = req.body
 
     //check for meetingWith, personName, contactNo
 
@@ -106,7 +107,8 @@ const addCheckIn = asyncHandler(async (req,res)=>{
         cloudinaryImage = await uploadOnCloudinary(image);
     }
 
-    const checkIn = await CheckIn.create({
+    const checkInDoc = await CheckIn.create({
+        checkIn,
         guest,
         personName,
         comingFrom,
@@ -119,7 +121,7 @@ const addCheckIn = asyncHandler(async (req,res)=>{
         image: cloudinaryImage?.url
     })
 
-    if(!checkIn){
+    if(!checkInDoc){
         throw new ApiError(500,"Unable to create the check-in")
     }
 
@@ -128,7 +130,7 @@ const addCheckIn = asyncHandler(async (req,res)=>{
         new ApiResponse(
             200,
             "Check-in created successfully",
-            checkIn
+            checkInDoc
         )
     )
 

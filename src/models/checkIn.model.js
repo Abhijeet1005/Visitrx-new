@@ -4,7 +4,7 @@ const checkInSchemna = new Schema({
 
     checkIn: {
         type: String,
-        default: () => new Date().toISOString()
+        // default: () => new Date().toISOString()
     },
 
     checkOut: {

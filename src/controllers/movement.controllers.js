@@ -6,7 +6,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 const addMovement =  asyncHandler(async (req,res)=>{
 
-    const { workFor,category,gatePassNo,purpose,permissionBy,remark } = req.body
+    const { workFor,category,gatePassNo,purpose,permissionBy,remark,checkOut } = req.body
     let employees;
 
     if(req.headers["user-agent"].startsWith("PostmanRuntime")){
@@ -27,27 +27,37 @@ const addMovement =  asyncHandler(async (req,res)=>{
         cloudinaryImage = await uploadOnCloudinary(image);
     }
 
-    const movement =  await Movement.create({
-        workFor,
-        category,
-        gatePassNo,
-        purpose,
-        permissionBy,
-        remark,
-        employees,
-        image: cloudinaryImage.url
-    })
+    let employeeList = []
 
-    if(!movement){
-        throw new ApiError(500,"Unable to create movement entry")
+    for(let employee of employees){ 
+
+        const movement =  await Movement.create({
+            checkOut,
+            workFor,
+            category,
+            gatePassNo,
+            purpose,
+            permissionBy,
+            remark,
+            employee: employee["employeeName"],
+            image: cloudinaryImage?.url || null
+        })
+
+        if(!movement){
+            throw new ApiError(500,"Unable to create movement entry")
+        }
+
+        employeeList.push(movement)
+
     }
+
 
     return res.status(200)
     .json(
         new ApiResponse(
             200,
             "Movement entry created",
-            movement
+            employeeList
         )
     )
 })
@@ -149,9 +159,12 @@ const updateMovement = asyncHandler(async (req,res)=>{
         throw new ApiError(400, "Invalid movement ID");
     }
 
-    const { workFor,category,gatePassNo,purpose,permissionBy,remark } = req.body
+    const { workFor,category,gatePassNo,purpose,permissionBy,remark,checkOut,checkIn,employee  } = req.body
 
     const updatedData = {
+        employee,
+        checkOut,
+        checkIn,
         workFor,
         category,
         gatePassNo,
