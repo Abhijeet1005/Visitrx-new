@@ -159,11 +159,12 @@ const updateMovement = asyncHandler(async (req,res)=>{
         throw new ApiError(400, "Invalid movement ID");
     }
 
-    const { workFor,category,gatePassNo,purpose,permissionBy,remark,checkOut,employee  } = req.body
+    const { workFor,category,gatePassNo,purpose,permissionBy,remark,checkOut,checkIn,employee  } = req.body
 
     const updatedData = {
         employee,
         checkOut,
+        checkIn,
         workFor,
         category,
         gatePassNo,
