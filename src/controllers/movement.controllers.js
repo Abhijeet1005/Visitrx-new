@@ -27,27 +27,37 @@ const addMovement =  asyncHandler(async (req,res)=>{
         cloudinaryImage = await uploadOnCloudinary(image);
     }
 
-    const movement =  await Movement.create({
-        workFor,
-        category,
-        gatePassNo,
-        purpose,
-        permissionBy,
-        remark,
-        employees,
-        image: cloudinaryImage.url
-    })
+    let employeeList = null
 
-    if(!movement){
-        throw new ApiError(500,"Unable to create movement entry")
+    for(let employee in employees){ 
+
+        const movement =  await Movement.create({
+            workFor,
+            category,
+            gatePassNo,
+            purpose,
+            permissionBy,
+            remark,
+            employee,
+            image: cloudinaryImage.url || null
+        })
+
+        if(!movement){
+            throw new ApiError(500,"Unable to create movement entry")
+        }else{
+
+            employeeList.push(movement)
+        }
+
     }
+
 
     return res.status(200)
     .json(
         new ApiResponse(
             200,
             "Movement entry created",
-            movement
+            employeeList
         )
     )
 })

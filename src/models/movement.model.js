@@ -12,9 +12,9 @@ const movementSchema = new Schema({
         default: () => new Date().toISOString()
     },
 
-    employees: {
-        type: Array,
-        default: []
+    employee: {
+        type: String,
+        required: true
     },
 
     workFor: {
