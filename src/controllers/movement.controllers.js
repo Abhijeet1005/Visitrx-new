@@ -39,7 +39,7 @@ const addMovement =  asyncHandler(async (req,res)=>{
             purpose,
             permissionBy,
             remark,
-            employee,
+            employee: employee["employeeName"],
             image: cloudinaryImage?.url || null
         })
 
@@ -159,9 +159,10 @@ const updateMovement = asyncHandler(async (req,res)=>{
         throw new ApiError(400, "Invalid movement ID");
     }
 
-    const { workFor,category,gatePassNo,purpose,permissionBy,remark,checkOut  } = req.body
+    const { workFor,category,gatePassNo,purpose,permissionBy,remark,checkOut,employee  } = req.body
 
     const updatedData = {
+        employee,
         checkOut,
         workFor,
         category,
