@@ -9,7 +9,7 @@ const movementSchema = new Schema({
 
     checkOut: {
         type: String,
-        default: () => new Date().toISOString()
+        // default: () => new Date().toISOString()
     },
 
     employee: {

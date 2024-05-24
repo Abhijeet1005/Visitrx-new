@@ -6,7 +6,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 const addMovement =  asyncHandler(async (req,res)=>{
 
-    const { workFor,category,gatePassNo,purpose,permissionBy,remark } = req.body
+    const { workFor,category,gatePassNo,purpose,permissionBy,remark,checkOut } = req.body
     let employees;
 
     if(req.headers["user-agent"].startsWith("PostmanRuntime")){
@@ -27,11 +27,12 @@ const addMovement =  asyncHandler(async (req,res)=>{
         cloudinaryImage = await uploadOnCloudinary(image);
     }
 
-    let employeeList = null
+    let employeeList = []
 
-    for(let employee in employees){ 
+    for(let employee of employees){ 
 
         const movement =  await Movement.create({
+            checkOut,
             workFor,
             category,
             gatePassNo,
@@ -39,15 +40,14 @@ const addMovement =  asyncHandler(async (req,res)=>{
             permissionBy,
             remark,
             employee,
-            image: cloudinaryImage.url || null
+            image: cloudinaryImage?.url || null
         })
 
         if(!movement){
             throw new ApiError(500,"Unable to create movement entry")
-        }else{
-
-            employeeList.push(movement)
         }
+
+        employeeList.push(movement)
 
     }
 
@@ -159,9 +159,10 @@ const updateMovement = asyncHandler(async (req,res)=>{
         throw new ApiError(400, "Invalid movement ID");
     }
 
-    const { workFor,category,gatePassNo,purpose,permissionBy,remark } = req.body
+    const { workFor,category,gatePassNo,purpose,permissionBy,remark,checkOut  } = req.body
 
     const updatedData = {
+        checkOut,
         workFor,
         category,
         gatePassNo,
