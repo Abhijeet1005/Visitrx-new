@@ -63,7 +63,7 @@ const addAsset = asyncHandler(async (req, res) => {
 
     
     for (const element of assets) {
-        const { productName, quantityTotal, unit } = element;
+        const { productName, quantityTotal, unit, modelNo } = element;
 
         const newAsset = await Asset.create({
             productName,
@@ -78,6 +78,7 @@ const addAsset = asyncHandler(async (req, res) => {
             quantityInStock: quantityTotal,
             quantityTotal: quantityTotal,
             unit,
+            modelNo,
             invoiceImage: cloudinaryInvoiceImage?.url || null,
             productImage: cloudinaryProductImage?.url || null,
             createdBy: req.user._id,
@@ -125,6 +126,7 @@ const addAssetFromInward = asyncHandler(async (req,res)=>{
             quantityInStock: product.quantityTotal,
             quantityTotal: product.quantityTotal,
             unit: inward.unit,
+            modelNo: product.modelNo,
             invoiceImage: inward.invoiceImage,
             productImage: inward.productImage,
             createdBy: inward.createdBy,
@@ -199,7 +201,7 @@ const updateAssetById = asyncHandler(async(req,res)=>{
         throw new ApiError(400, "Invalid asset ID");
     }
 
-    const { productName, quantity, type, unit, details, returnType, returnDate, tags, condition, buyingDate, expiryDate } = req.body;
+    const { productName, quantity, type, unit, modelNo, details, returnType, returnDate, tags, condition, buyingDate, expiryDate } = req.body;
 
     const updatedAsset = await Asset.findByIdAndUpdate(id,{
         productName,
@@ -209,6 +211,7 @@ const updateAssetById = asyncHandler(async(req,res)=>{
         quantityInStock: quantity,
         quantityTotal: quantity,
         unit,
+        modelNo,
         returnDate,
         expiryDate,
         buyingDate,
