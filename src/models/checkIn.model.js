@@ -13,7 +13,7 @@ const checkInSchemna = new Schema({
 
     guest: {
         type: String,
-        enum: ["Visitor","Vendor","Guest","Karigar"]
+        enum: ["Visitor","Vendor","Guest","Karigar","Out-Karigar"]
     },
 
     personName: {
