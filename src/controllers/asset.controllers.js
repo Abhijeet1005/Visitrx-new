@@ -125,7 +125,7 @@ const addAssetFromInward = asyncHandler(async (req,res)=>{
             buyingDate: inward?.buyingDate,
             quantityInStock: product?.quantityTotal,
             quantityTotal: product?.quantityTotal,
-            unit: inward?.unit,
+            unit: product?.unit,
             modelNo: product?.modelNo,
             invoiceImage: inward?.invoiceImage,
             productImage: inward?.productImage,
