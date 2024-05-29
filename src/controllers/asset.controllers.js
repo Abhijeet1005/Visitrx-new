@@ -114,22 +114,22 @@ const addAssetFromInward = asyncHandler(async (req,res)=>{
     for(let product of inward.assets){
 
         const newAsset = await Asset.create({
-            productName: product.productName,
-            returnType: inward.returnType,
-            type: inward.type,
-            details: inward.details,
-            condition: inward.condition,
-            tags: inward.tags,
-            expiryDate: inward.expiryDate,
-            returnDate: inward.returnDate,
-            buyingDate: inward.buyingDate,
-            quantityInStock: product.quantityTotal,
-            quantityTotal: product.quantityTotal,
-            unit: inward.unit,
-            modelNo: product.modelNo,
-            invoiceImage: inward.invoiceImage,
-            productImage: inward.productImage,
-            createdBy: inward.createdBy,
+            productName: product?.productName,
+            returnType: inward?.returnType,
+            type: inward?.type,
+            details: inward?.details,
+            condition: inward?.condition,
+            tags: inward?.tags,
+            expiryDate: inward?.expiryDate,
+            returnDate: inward?.returnDate,
+            buyingDate: inward?.buyingDate,
+            quantityInStock: product?.quantityTotal,
+            quantityTotal: product?.quantityTotal,
+            unit: inward?.unit,
+            modelNo: product?.modelNo,
+            invoiceImage: inward?.invoiceImage,
+            productImage: inward?.productImage,
+            createdBy: inward?.createdBy,
         });
 
         if(!newAsset){
