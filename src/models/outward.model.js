@@ -39,6 +39,10 @@ const outwardSchema = new Schema({
 
     details: {
         type: String,
+    },
+
+    gatePassNo: {
+        type: String
     }
 
 },{timestamps: true})
