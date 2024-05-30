@@ -43,6 +43,11 @@ const outwardSchema = new Schema({
 
     gatePassNo: {
         type: String
+    },
+
+    authorisedBy: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
     }
 
 },{timestamps: true})
