@@ -92,96 +92,75 @@ const addMeeting = asyncHandler(async (req,res)=>{
 
 })
 
-const updateMeeting = asyncHandler(async (req,res)=>{
-    
-    const { meetingWithContact, meetingWithName, expectedTimeOfMeet, meetingFinished} = req.body
-    const {id} = req.params
-    
+const updateMeeting = asyncHandler(async (req, res) => {
+    const { meetingWithContact, meetingWithName, expectedTimeOfMeet, meetingFinished } = req.body;
+    const { id } = req.params;
+
     if (!id) {
         throw new ApiError(400, "Please provide meeting ID");
     }
 
-    // Validate ID (ensure it's a string or a valid ObjectId)
-    if (typeof id !== "string" && !mongoose.Types.ObjectId.isValid(id)) {
+    // Validate ID (ensure it's a valid ObjectId)
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(400, "Invalid meeting ID");
     }
 
-    const meetingCheck = await Meeting.findById(id)
+    const meeting = await Meeting.findById(id);
 
-    if(!meetingCheck){
-        throw new ApiError(401,"Unable to fetch meeting")
+    if (!meeting) {
+        throw new ApiError(404, "Meeting not found");
     }
 
-    if(!(req.user.role === "AppAdmin")){
-        if(!(meetingCheck.personInCharge === req.user._id)){
-            throw new ApiError(400, "Not authorised to edit this meeting")
-        }
+    if (req.user.role !== "AppAdmin" && meeting.personInCharge.toString() !== req.user._id.toString()) {
+        throw new ApiError(403, "Not authorised to edit this meeting");
     }
 
-    const meeting = await Meeting.findByIdAndUpdate({
-        meetingWithContact,
-        meetingWithName,
-        expectedTimeOfMeet,
-        meetingFinished
-    })
+    const updatedMeeting = await Meeting.findByIdAndUpdate(
+        id,
+        { meetingWithContact, meetingWithName, expectedTimeOfMeet, meetingFinished },
+        { new: true } // To return the updated document
+    );
 
-    if(!meeting){
-        throw new ApiError(500, "Unable to update meeting")
+    if (!updatedMeeting) {
+        throw new ApiError(500, "Unable to update meeting");
     }
 
-    return res.status(200)
-    .json(
-        new ApiResponse(
-            200,
-            "Meeting updated",
-            meeting
-        )
-    )
+    return res.status(200).json(new ApiResponse(200, "Meeting updated", updatedMeeting));
+});
 
-})
 
-const deleteMeeting = asyncHandler(async (req,res)=>{
+const deleteMeeting = asyncHandler(async (req, res) => {
+    const { id } = req.params;
 
-    const {id} = req.params
-    
     if (!id) {
         throw new ApiError(400, "Please provide meeting ID");
     }
 
-    // Validate ID (ensure it's a string or a valid ObjectId)
-    if (typeof id !== "string" && !mongoose.Types.ObjectId.isValid(id)) {
+    // Validate ID (ensure it's a valid ObjectId)
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(400, "Invalid meeting ID");
     }
 
-    const meetingCheck = await Meeting.findById(id)
+    const meeting = await Meeting.findById(id);
 
-    if(!meetingCheck){
-        throw new ApiError(401,"Unable to fetch meeting")
+    if (!meeting) {
+        throw new ApiError(404, "Meeting not found");
     }
 
-    if(!(req.user.role === "AppAdmin")){
-        if(!(meetingCheck.personInCharge === req.user._id)){
-            throw new ApiError(400, "Not authorised to delete this meeting")
-        }
+    // Check if the user is authorized to delete the meeting
+    if (req.user.role !== "AppAdmin" && meeting.personInCharge.toString() !== req.user._id.toString()) {
+        throw new ApiError(403, "Not authorised to delete this meeting");
     }
 
-    const meeting = await Meeting.findByIdAndDelete(id,{
-        new: true
-    })
+    const deletedMeeting = await Meeting.findByIdAndDelete(id);
 
-    if(!meeting){
-        throw new ApiError(500, "Unable to delete meeting")
+    if (!deletedMeeting) {
+        throw new ApiError(500, "Unable to delete meeting");
     }
 
-    return res.status(200)
-    .json(
-        new ApiResponse(
-            200,
-            "Meeting deleted",
-            meeting
-        )
-    )
-})
+    return res.status(200).json(new ApiResponse(200, "Meeting deleted", deletedMeeting));
+});
+
 
 export {
     getAllMeetings,

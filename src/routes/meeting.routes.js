@@ -11,7 +11,7 @@ router.route("/allMeetingsForHead").get(JWTcheck,getAllMeetingsForHead)
 
 router.route("/add").post(JWTcheck,addMeeting)
 router.route("/update/:id").post(JWTcheck,updateMeeting)
-router.route("/delete/:id").post(JWTcheck,deleteMeeting)
+router.route("/delete/:id").delete(JWTcheck,deleteMeeting)
 
 
 export default router
