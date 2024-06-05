@@ -6,7 +6,10 @@ import { User } from "../models/user.model.js";
 import mongoose from "mongoose";
 
 const getAllMeetings = asyncHandler(async (req,res)=>{
-    const meetings = await Meeting.find()
+    const meetings = await Meeting.find().populate({
+        path: "personInCharge",
+        select: "-refreshToken -password"
+    })
 
     if(!meetings){
         throw new ApiError(500, "Unable to fetch meetings")
@@ -33,6 +36,9 @@ const getAllMeetingsForHead = asyncHandler(async (req,res)=>{
 
     const meetings = await Meeting.find({
         personInCharge: user._id
+    }).populate({
+        path: "personInCharge",
+        select: "-refreshToken -password"
     })
 
     if(meetings === undefined){
