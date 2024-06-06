@@ -19,12 +19,12 @@ const movementSchema = new Schema({
 
     workFor: {
         type: String,
-        enum: ["Official","Personal"]
+        enum: ["Official","Personal","None"]
     },
 
     category: {
         type: String,
-        enum: ["Officer","Karigar"]
+        enum: ["Officer","Karigar","None"]
     },
 
     gatePassNo: {
