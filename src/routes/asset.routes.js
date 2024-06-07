@@ -23,7 +23,7 @@ router.route("/delete/:id").delete(JWTcheck,AssetAdmincheck,deleteAssetById); //
 
 router.route("/update/:id").post(JWTcheck,AssetAdmincheck,updateAssetById); // Update asset
 
-router.route("/getAsset/:id").get(JWTcheck,AssetAdmincheck,getAssetById); 
+router.route("/getAsset/:id").get(/*JWTcheck,AssetAdmincheck,*/getAssetById); 
 
 
 

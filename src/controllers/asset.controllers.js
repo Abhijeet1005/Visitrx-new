@@ -43,9 +43,9 @@ const getAssetById = asyncHandler(async (req, res) => {
         throw new ApiError(500, "Unable to find asset");
     }
 
-    let qrData = `https://vautoai-asset.vercel.app/verify/qrcode?id=${asset._id}`
+    let qrData = `${process.env.ASSET_DATA_QR}?id=${asset._id}`
 
-    console.log(qrData)
+    // console.log(qrData)
 
     let qrCode = await generateQRCode(qrData)
 
