@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { JWTcheck } from "../middlewares/auth.middleware.js";
-import { assetAssignRequest, assetUnAssignRequest, getAllAssignments, getAllForDepartment, getAllForUser } from "../controllers/assignment.controllers.js";
+import { assetAssignRequest, assetUnAssignRequest, getAllAssignments, getAllForDepartment, getAllForUser, getAssignmentById } from "../controllers/assignment.controllers.js";
 import { AssetAdmincheck } from "../middlewares/assetAdmin.middleware.js";
 import { adminDepartment } from "../middlewares/adminDepartment.middleware.js";
 import { AppAndAssetAdmincheck } from "../middlewares/assetAndAppAdminCheck.middleware.js";
@@ -12,6 +12,8 @@ router.route("/assign/:id").post(JWTcheck,AssetAdmincheck,assetAssignRequest) //
 router.route("/unassign/:id").post(JWTcheck,assetUnAssignRequest) //This is taking the assignment ID
 
 router.route("/getAll").get(JWTcheck,AppAndAssetAdmincheck,getAllAssignments)
+
+router.route("/getAssignment/:id").get(getAssignmentById)
 
 router.route("/getAllForUser/:email").get(JWTcheck,getAllForUser) //We will be using email directly because they are unique
 
