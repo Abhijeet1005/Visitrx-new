@@ -40,10 +40,10 @@ const getAssetById = asyncHandler(async (req, res) => {
     const asset = await Asset.findById(id)
 
     if (!asset) {
-        throw new ApiError(500, "Unable to find asset");
+        throw new ApiError(401, "Unable to find asset");
     }
 
-    let qrData = `${process.env.ASSET_DATA_QR}?id=${asset._id}`
+    let qrData = `${process.env.QR_VERIFY}?id=${asset._id}`
 
     // console.log(qrData)
 
