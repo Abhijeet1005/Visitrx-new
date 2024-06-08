@@ -2,7 +2,7 @@ import QRCode from 'qrcode';
 
 export async function generateQRCode(data) {
     try {
-      const jsonString = JSON.stringify(data);
+      const jsonString = data;
       const qrCodeDataURL = await QRCode.toDataURL(jsonString);
       return qrCodeDataURL;
     } catch (error) {
