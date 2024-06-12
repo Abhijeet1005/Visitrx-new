@@ -11,8 +11,8 @@ const router = Router()
 router.route("/assetAssign/:token").get(tokenCheckMiddleware,assetAssign); 
 router.route("/assetUnAssign/:token").get(tokenCheckMiddleware,assetUnAssign); 
 router.route("/assetsFromSecurityCheck/:token").get(tokenCheckMiddleware,addAssetFromInward)
-router.route("/outwardRequestFromAssetAdmin/:token").get(tokenCheckMiddleware,createOutward)
-router.route("/outwardReturn/:token").get(tokenCheckMiddleware,outwardReturn)
-router.route("/checkInVerify/:token").get(tokenCheckMiddleware,addCheckInFromToken)
+router.route("/outwardRequestFromAssetAdmin").get(tokenCheckMiddleware,createOutward)
+router.route("/outwardReturn").get(tokenCheckMiddleware,outwardReturn)
+router.route("/checkInVerify").get(tokenCheckMiddleware,addCheckInFromToken)
 
 export default router
