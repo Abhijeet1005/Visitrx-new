@@ -5,7 +5,7 @@ import { Token } from "../models/token.model.js";
 
 const tokenCheckMiddleware = asyncHandler(async(req,res,next)=>{
 
-    const {token} = req.params
+    const {token} = req.query
     const checkForUsed = await Token.findOne({
         token: token.toString()
     })

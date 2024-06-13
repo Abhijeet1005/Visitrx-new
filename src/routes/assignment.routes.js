@@ -9,7 +9,7 @@ const router = Router();
 
 router.route("/assign/:id").post(JWTcheck,AssetAdmincheck,assetAssignRequest) //Makes a new asset assignment request, :id is of asset to be assigned
 
-router.route("/unassign/:id").post(JWTcheck,assetUnAssignRequest) //This is taking the assignment ID
+router.route("/unassign/:id").get(JWTcheck,assetUnAssignRequest) //This is taking the assignment ID
 
 router.route("/getAll").get(JWTcheck,AppAndAssetAdmincheck,getAllAssignments)
 

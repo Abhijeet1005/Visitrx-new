@@ -55,7 +55,7 @@ const checkInRequest = asyncHandler(async (req,res)=>{
         department,
         purpose,
         remark,
-        cloudinaryImage : cloudinaryImage.url
+        cloudinaryImage : cloudinaryImage?.url
     }
 
     const securityAdmin = await User.find({
@@ -67,12 +67,11 @@ const checkInRequest = asyncHandler(async (req,res)=>{
     }
 
     const token = generateToken(data)
-    const emailContent = 
-    `
+    const emailContent = `
     <h1>To verify the check-in of ${personName} with contact ${contactNo}</h1>
     <br>
-    <a href="${process.env.USER_CHECKIN}/${token}">Click Here</a>
-    `
+    <a href="${process.env.USER_CHECKIN}?token=${token}">Click Here</a>
+    `;
     const emailSubject = "Check-in request Email";
 
     const emailSent = await emailer(securityAdmin[0].email, emailSubject, emailContent);
@@ -140,6 +139,7 @@ const addCheckIn = asyncHandler(async (req,res)=>{
 //This will be called from the token's checkin request route
 const addCheckInFromToken = asyncHandler( async (req,res)=>{
     const {
+        checkIn,
         guest,
         personName,
         comingFrom,
@@ -153,7 +153,8 @@ const addCheckInFromToken = asyncHandler( async (req,res)=>{
     } = req.tokenData
 
 
-    const checkIn = await CheckIn.create({
+    const checkInDoc = await CheckIn.create({
+        checkIn,
         guest,
         personName,
         comingFrom,
@@ -166,7 +167,7 @@ const addCheckInFromToken = asyncHandler( async (req,res)=>{
         image: cloudinaryImage || null
     })
 
-    if(!checkIn){
+    if(!checkInDoc){
         throw new ApiError(500,"Unable to create check-in")
     }
 
@@ -175,7 +176,7 @@ const addCheckInFromToken = asyncHandler( async (req,res)=>{
         new ApiResponse(
             200,
             "Check-in created successfully",
-            checkIn
+            checkInDoc
         )
     )
 

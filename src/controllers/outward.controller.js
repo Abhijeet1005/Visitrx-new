@@ -260,6 +260,76 @@ const outwardReturn = asyncHandler(async (req,res)=>{
     )
 })
 
+const updateOutward = asyncHandler(async (req,res)=>{
+
+    const { id } = req.params
+
+    if (!id) {
+        throw new ApiError(400, "Please provide outward ID");
+    }
+
+    // Validate ID (ensure it's a string or a valid ObjectId)
+    if (typeof id !== "string" && !mongoose.Types.ObjectId.isValid(id)) {
+        throw new ApiError(400, "Invalid outward ID");
+    }
+
+    const { sendingToContact, sendingToName, details, returnType } =  req.body
+
+    const outward = await Outward.findByIdAndUpdate(id,{
+        sendingToContact,
+        sendingToName,
+        details,
+        returnType,
+    },{
+        new: true
+    })
+
+    if(!outward){
+        throw new ApiError(401,"Unable to find or update the outward entry")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(
+            200,
+            "Outward updated successfully",
+            outward
+        )
+    )
+
+})
+
+const deleteOutward = asyncHandler(async (req,res)=>{
+
+    const { id } = req.params
+
+    if (!id) {
+        throw new ApiError(400, "Please provide outward ID");
+    }
+
+    // Validate ID (ensure it's a string or a valid ObjectId)
+    if (typeof id !== "string" && !mongoose.Types.ObjectId.isValid(id)) {
+        throw new ApiError(400, "Invalid outward ID");
+    }
+
+    const outward = await Outward.findByIdAndDelete(id,{
+        new: true
+    })
+
+    if(!outward){
+        throw new ApiError(401,"Unable to find or delete the outward entry")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(
+            200,
+            "Outward deleted successfully",
+            outward
+        )
+    )
+})
 
 
-export { getAllOutwards, outwardCreationRequest, createOutward, outwardReturnRequest, outwardReturn }
+
+export { getAllOutwards, outwardCreationRequest, createOutward, outwardReturnRequest, outwardReturn,updateOutward, deleteOutward }

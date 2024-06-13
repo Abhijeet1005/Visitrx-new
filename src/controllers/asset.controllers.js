@@ -242,15 +242,15 @@ const updateAssetById = asyncHandler(async(req,res)=>{
         throw new ApiError(400, "Invalid asset ID");
     }
 
-    const { productName, quantity, type, unit, modelNo, details, returnType, returnDate, tags, condition, buyingDate, expiryDate } = req.body;
+    const { productName, quantityTotal,quantityInStock, type, unit, modelNo, details, returnType, returnDate, tags, condition, buyingDate, expiryDate } = req.body;
 
     const updatedAsset = await Asset.findByIdAndUpdate(id,{
         productName,
         returnType,
         type,
         details,
-        quantityInStock: quantity,
-        quantityTotal: quantity,
+        quantityInStock: quantityInStock,
+        quantityTotal: quantityTotal,
         unit,
         modelNo,
         returnDate,
