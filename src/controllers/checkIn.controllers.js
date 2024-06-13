@@ -139,6 +139,7 @@ const addCheckIn = asyncHandler(async (req,res)=>{
 //This will be called from the token's checkin request route
 const addCheckInFromToken = asyncHandler( async (req,res)=>{
     const {
+        checkIn,
         guest,
         personName,
         comingFrom,
@@ -152,7 +153,8 @@ const addCheckInFromToken = asyncHandler( async (req,res)=>{
     } = req.tokenData
 
 
-    const checkIn = await CheckIn.create({
+    const checkInDoc = await CheckIn.create({
+        checkIn,
         guest,
         personName,
         comingFrom,
@@ -165,7 +167,7 @@ const addCheckInFromToken = asyncHandler( async (req,res)=>{
         image: cloudinaryImage || null
     })
 
-    if(!checkIn){
+    if(!checkInDoc){
         throw new ApiError(500,"Unable to create check-in")
     }
 
@@ -174,7 +176,7 @@ const addCheckInFromToken = asyncHandler( async (req,res)=>{
         new ApiResponse(
             200,
             "Check-in created successfully",
-            checkIn
+            checkInDoc
         )
     )
 
