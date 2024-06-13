@@ -55,7 +55,7 @@ const checkInRequest = asyncHandler(async (req,res)=>{
         department,
         purpose,
         remark,
-        cloudinaryImage : cloudinaryImage.url
+        cloudinaryImage : cloudinaryImage?.url
     }
 
     const securityAdmin = await User.find({
@@ -67,12 +67,11 @@ const checkInRequest = asyncHandler(async (req,res)=>{
     }
 
     const token = generateToken(data)
-    const emailContent = 
-    `
+    const emailContent = `
     <h1>To verify the check-in of ${personName} with contact ${contactNo}</h1>
     <br>
-    <a href="${process.env.USER_CHECKIN}/${token}">Click Here</a>
-    `
+    <a href="${process.env.USER_CHECKIN}?token=${token}">Click Here</a>
+    `;
     const emailSubject = "Check-in request Email";
 
     const emailSent = await emailer(securityAdmin[0].email, emailSubject, emailContent);
