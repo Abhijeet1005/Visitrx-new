@@ -123,7 +123,7 @@ const assetUnAssignRequest = asyncHandler(async(req,res)=>{
         throw new ApiError(400,"Assignment does not exist")
     }
 
-    if(!(assignment.assignedTo.toString() === req.user._id.toString())){
+    if(!(assignment.assignedTo?._id.toString() === req.user._id.toString())){
         throw new ApiError(401,"Please login with the corresponding user ID")
     }
 
