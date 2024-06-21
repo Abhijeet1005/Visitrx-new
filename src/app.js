@@ -1,8 +1,16 @@
 import cookieParser from "cookie-parser";
 import express from "express";
 import cors from 'cors';
+import http from 'http';
+import { Server } from "socket.io"
 
 const app = express()
+
+const server = http.createServer(app)
+console.log("Http server initialized...")
+
+const io = new Server(server)
+console.log("Socket server initialized...")
 
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
@@ -48,4 +56,4 @@ app.use("/api/meeting",meetingRouter)
 
 app.use(errorHandler)
 
-export {app}
+export {app, server, io}
