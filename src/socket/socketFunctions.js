@@ -1,5 +1,5 @@
 import { io } from "../app.js";
-import { emailSocketMap } from "./socketHandler.js";
+import { emailSocketMap } from "../app.js";
 
 function sendMessageToEmail(email, message) {
     const socketId = emailSocketMap.get(email);

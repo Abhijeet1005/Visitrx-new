@@ -15,6 +15,23 @@ const io = new Server(server,{
     }
 })
 
+const emailSocketMap = new Map();
+
+io.on('connection', (socket) => {
+    console.log(`A user connected: ${socket.id} with email ${socket.email}`);
+
+    socket.on('register', (email)=>{
+        emailSocketMap.set(email, socket.id);
+    })
+
+    //Socket disconnection
+    socket.on('disconnect', () => {
+        console.log('User disconnected:', socket.id);
+        emailSocketMap.delete(email);
+    });
+
+});
+
 console.log("Socket server initialized...")
 
 app.use(cors({
@@ -61,4 +78,4 @@ app.use("/api/meeting",meetingRouter)
 
 app.use(errorHandler)
 
-export {app, server, io}
+export {app, server, io, emailSocketMap}
