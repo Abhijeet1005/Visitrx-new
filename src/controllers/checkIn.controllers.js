@@ -59,11 +59,11 @@ const checkInRequest = asyncHandler(async (req,res)=>{
         cloudinaryImage : cloudinaryImage?.url
     }
 
-    const securityAdmin = await User.find({
+    const securityAdmins = await User.find({
         role: "SecurityAdmin",
     })
 
-    if(!securityAdmin){
+    if(!securityAdmins){
         throw new ApiError(500, "Unable to find a security admin")
     }
 
@@ -75,12 +75,13 @@ const checkInRequest = asyncHandler(async (req,res)=>{
     `;
     const emailSubject = "Check-in request Email";
 
-    const emailSent = await emailer(securityAdmin[0].email, emailSubject, emailContent);
+    const emailSent = await emailer(securityAdmins[0].email, emailSubject, emailContent);
     
     let link = `${process.env.USER_CHECKIN}?token=${token}`
     let notifMessage = `verify the check-in of ${personName} with contact ${contactNo}`
+
     if (emailSent) {
-        sendMessageToEmail(securityAdmin,notifMessage,token,link)
+        sendMessageToEmail(securityAdmins[0],notifMessage,token,link)
         // Email sent successfully
         return res.status(200).json(new ApiResponse(200, "Email sent successfully", null));
     } else {
