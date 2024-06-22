@@ -14,7 +14,7 @@ async function sendMessageToEmail(user, message, token,link) {
         })
 
         if(notif){
-            io.to(socketId).emit('message', [message,token,link]);
+            io.to(socketId).emit('message', notif);
         }
         else{
             console.log("Unable to create notification")
