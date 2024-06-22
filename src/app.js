@@ -14,23 +14,27 @@ const io = new Server(server,{
         origin: process.env.CORS_ORIGIN,
     }
 })
-
-const emailSocketMap = new Map();
+const emailSocketMap = {};
 
 io.on('connection', (socket) => {
-    console.log(`A user connected: ${socket.id} with email ${socket.email}`);
+    console.log(`A user connected: ${socket.id}`);
 
-    socket.on('register', (email)=>{
-        emailSocketMap.set(email, socket.id);
-    })
+    socket.on('register', (email) => {
+        emailSocketMap[email] = socket.id;
+        console.log(`Registered: ${email} with socketID:  ${socket.id}`);
+    });
 
     //Socket disconnection
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);
-        emailSocketMap.delete(email);
+        const emailToDelete = Object.keys(emailSocketMap).find(email => emailSocketMap[email] === socket.id);
+        if (emailToDelete) {
+            delete emailSocketMap[emailToDelete];
+            console.log(`Deleted: ${emailToDelete} -> ${socket.id}`);
+        }
     });
-
 });
+
 
 console.log("Socket server initialized...")
 
