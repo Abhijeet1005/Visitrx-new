@@ -10,6 +10,9 @@ const server = http.createServer(app)
 console.log("Http server initialized...")
 
 const io = new Server(server)
+io.use(cors({
+    origin: process.env.CORS_ORIGIN
+}))
 console.log("Socket server initialized...")
 
 app.use(cors({
