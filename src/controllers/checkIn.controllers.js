@@ -77,11 +77,10 @@ const checkInRequest = asyncHandler(async (req,res)=>{
 
     const emailSent = await emailer(securityAdmin[0].email, emailSubject, emailContent);
     
+    let link = `${process.env.USER_CHECKIN}?token=${token}`
+    let notifMessage = `verify the check-in of ${personName} with contact ${contactNo}`
     if (emailSent) {
-
-        let notifMessage = `verify the check-in of ${personName} with contact ${contactNo}`
-
-        sendMessageToEmail(securityAdmin,notifMessage,token,link=`${process.env.USER_CHECKIN}?token=${token}`)
+        sendMessageToEmail(securityAdmin,notifMessage,token,link)
         // Email sent successfully
         return res.status(200).json(new ApiResponse(200, "Email sent successfully", null));
     } else {
