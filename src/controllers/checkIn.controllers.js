@@ -6,6 +6,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { generateToken } from "../utils/tokenizer.js";
 import { User } from "../models/user.model.js";
 import { emailer } from "../utils/emailer.js";
+import { sendMessageToEmail } from "../socket/socketFunctions.js";
 
 const getAllCheckIns = asyncHandler(async (req,res)=>{
     const checkIns = await CheckIn.find()
@@ -77,6 +78,10 @@ const checkInRequest = asyncHandler(async (req,res)=>{
     const emailSent = await emailer(securityAdmin[0].email, emailSubject, emailContent);
     
     if (emailSent) {
+
+        let notifMessage = `verify the check-in of ${personName} with contact ${contactNo}`
+
+        sendMessageToEmail(securityAdmin,notifMessage,token,link=`${process.env.USER_CHECKIN}?token=${token}`)
         // Email sent successfully
         return res.status(200).json(new ApiResponse(200, "Email sent successfully", null));
     } else {

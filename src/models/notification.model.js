@@ -24,6 +24,11 @@ const notificationSchema = new Schema({
         default: false
     },
 
+    verificationLink: {
+        type: String,
+        required: true
+    }
+
 },{timestamps: true})
 
 export const Notification = mongoose.model("Notification",notificationSchema)
