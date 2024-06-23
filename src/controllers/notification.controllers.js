@@ -30,10 +30,36 @@ const getNotificationsForUser = asyncHandler(async (req,res)=>{
             notifs
         )
     )
-}) 
-
-const createNotification = asyncHandler(async (req,res)=>{
-
 })
 
-export { getNotificationsForUser, createNotification }
+const makeItRead = asyncHandler(async(req,res)=>{
+    const { id } = req.body
+
+    if (!id) {
+        throw new ApiError(400, "Please provide notification ID");
+    }
+
+    // Validate ID (ensure it's a string or a valid ObjectId)
+    if (typeof id !== "string" && !mongoose.Types.ObjectId.isValid(id)) {
+        throw new ApiError(400, "Invalid notification ID");
+    }
+
+    const notif = await Notification.findByIdAndUpdate(id,{
+        isRead: true
+    })
+
+    if(!notif){
+        throw new ApiError(500,"Unable to mark as read")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(
+            200,
+            "Marked notif as read",
+            notif
+        )
+    )
+})
+
+export { getNotificationsForUser, makeItRead}
