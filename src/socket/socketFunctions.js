@@ -1,3 +1,4 @@
+import { Socket } from "socket.io";
 import { io } from "../app.js";
 import { emailSocketMap } from "../app.js";
 import { Notification } from "../models/notification.model.js";
@@ -25,5 +26,19 @@ async function sendMessageToEmail(user, message, token,link) {
     }
 }
 
+async function sendNotification(message,user){
+    if(!user){
+        io.emit("notification",message)
+    }else{
+        const socketId = emailSocketMap[user.email];
 
-export { sendMessageToEmail }
+        if(socketId){
+            io.to(socketId).emit("notification",message)
+        }else{
+            console.log(`No socket found for email: ${user.email}`)
+        }
+    }
+}
+
+
+export { sendMessageToEmail, sendNotification }
