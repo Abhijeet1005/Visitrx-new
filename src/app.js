@@ -61,6 +61,7 @@ import movementRouter from "./routes/movement.routes.js"
 import assignmentRouter from "./routes/assignment.routes.js"
 import employeeRouter from "./routes/employee.routes.js"
 import meetingRouter from "./routes/meeting.routes.js"
+import notificationRouter from "./routes/notification.routes.js"
 import errorHandler from "./middlewares/errorHandler.middleware.js";
 
 
@@ -78,7 +79,7 @@ app.use("/api/assignment",assignmentRouter)
 app.use("/api/checkIn",checkInRouter)
 app.use("/api/movement",movementRouter)
 app.use("/api/meeting",meetingRouter)
-
+app.use("/api/notification",notificationRouter)
 
 app.use(errorHandler)
 

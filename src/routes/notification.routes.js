@@ -8,6 +8,8 @@ router.route("/getNotifications").get(JWTcheck,getNotificationsForUser)
 
 router.route("/isRead").post(JWTcheck,makeItRead)
 
+export default router
+
 /*
 Notifs will be created internally when required by directly using the controller provided and
 isRead will also be modified internally on successful token verification  
