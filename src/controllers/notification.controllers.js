@@ -16,7 +16,7 @@ const getNotificationsForUser = asyncHandler(async (req,res)=>{
     const notifs = await Notification.find({
         user: req.user?._id,
         createdAt: { $gte: daysAgo }
-    })
+    }).sort({ createdAt: -1 })
 
     if(notifs === undefined){
         throw new ApiError(500, "Unable to fetch notifications")
