@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Redis } from "ioredis";
 
 const connectDB = async () => {
   try {
@@ -21,4 +22,21 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
-export default connectDB;
+
+let redis;
+const connectRedis = async () => {
+ try {
+
+   redis = new Redis(process.env.REDIS)
+   console.log("-- Connected to redis --")
+
+ } catch (error) {
+  
+  throw error
+ }
+}
+export {
+  connectDB,
+  connectRedis,
+  redis
+}

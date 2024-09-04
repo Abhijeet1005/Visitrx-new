@@ -1,13 +1,15 @@
 import dotenv from 'dotenv';
-import connectDB from "./db/db.js";
+import { connectDB, connectRedis } from "./db/db.js";
 import {app,server} from './app.js';
 
 
 dotenv.config({
     path: './.env'
 })
-
-connectDB()
+connectRedis()
+.then(()=>{
+    return connectDB()
+})
 .then((host)=>{
     console.log(`MongoDB connected with host: ${host} 🎉 `)
 
