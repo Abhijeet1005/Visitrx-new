@@ -9,7 +9,7 @@ import { emailer } from "../utils/emailer.js";
 
 const getAllInward = asyncHandler(async(req,res)=>{
 
-    const inwards = await Inward.find()
+    const inwards = await Inward.find().sort({ buyingDate: -1 });
 
     if(!inwards){
         throw new ApiError(401,"Unable to fetch inward entries")

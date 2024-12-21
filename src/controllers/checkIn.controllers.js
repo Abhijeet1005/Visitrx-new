@@ -8,7 +8,7 @@ import { User } from "../models/user.model.js";
 import { emailer } from "../utils/emailer.js";
 
 const getAllCheckIns = asyncHandler(async (req,res)=>{
-    const checkIns = await CheckIn.find()
+    const checkIns = await CheckIn.find().sort({ checkIn: -1 });
 
     if(checkIns === undefined){
         throw new ApiError(500,"Unable to fetch check-ins")
