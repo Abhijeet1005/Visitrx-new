@@ -1,8 +1,42 @@
 import cookieParser from "cookie-parser";
 import express from "express";
 import cors from 'cors';
+import http from 'http';
+import { Server } from "socket.io"
 
 const app = express()
+
+const server = http.createServer(app)
+console.log("Http server initialized...")
+
+const io = new Server(server,{
+    cors: {
+        origin: process.env.CORS_ORIGIN,
+    }
+})
+const emailSocketMap = {};
+
+io.on('connection', (socket) => {
+    console.log(`A user connected: ${socket.id}`);
+
+    socket.on('register', (email) => {
+        emailSocketMap[email] = socket.id;
+        console.log(`Registered: ${email} with socketID:  ${socket.id}`);
+    });
+
+    //Socket disconnection
+    socket.on('disconnect', () => {
+        console.log('User disconnected:', socket.id);
+        const emailToDelete = Object.keys(emailSocketMap).find(email => emailSocketMap[email] === socket.id);
+        if (emailToDelete) {
+            delete emailSocketMap[emailToDelete];
+            console.log(`Deleted: ${emailToDelete} -> ${socket.id}`);
+        }
+    });
+});
+
+
+console.log("Socket server initialized...")
 
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
@@ -27,6 +61,7 @@ import movementRouter from "./routes/movement.routes.js"
 import assignmentRouter from "./routes/assignment.routes.js"
 import employeeRouter from "./routes/employee.routes.js"
 import meetingRouter from "./routes/meeting.routes.js"
+import notificationRouter from "./routes/notification.routes.js"
 import errorHandler from "./middlewares/errorHandler.middleware.js";
 
 
@@ -44,8 +79,8 @@ app.use("/api/assignment",assignmentRouter)
 app.use("/api/checkIn",checkInRouter)
 app.use("/api/movement",movementRouter)
 app.use("/api/meeting",meetingRouter)
-
+app.use("/api/notification",notificationRouter)
 
 app.use(errorHandler)
 
-export {app}
+export {app, server, io, emailSocketMap}

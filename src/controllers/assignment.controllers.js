@@ -8,6 +8,7 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 import { emailer } from "../utils/emailer.js"
 import { generateToken } from "../utils/tokenizer.js"
 import { generateQRCode } from "../utils/qr.js"
+import { sendMessageToEmail } from "../socket/socketFunctions.js"
 
 //This will create a request to assign asset
 const assetAssignRequest= asyncHandler(async(req,res)=>{
@@ -65,8 +66,13 @@ const assetAssignRequest= asyncHandler(async(req,res)=>{
     const emailSubject = "Assignment Email";
 
     const emailSent = await emailer(user.email, emailSubject, emailContent);
-    
+
+    let link = `${process.env.ASSET_TO_USER}?token=${token}`
+    let notifMessage = `verify the assignment of ${quantity} of ${asset.productName}`
+
     if (emailSent) {
+
+        sendMessageToEmail(user,notifMessage,token,link)
         // Email sent successfully
         return res.status(200).json(new ApiResponse(200, "Email sent successfully", null));
     } else {
@@ -147,8 +153,13 @@ const assetUnAssignRequest = asyncHandler(async(req,res)=>{
     const emailSubject = "Un-assignment Email";
 
     const emailSent = await emailer(assetAdmin.email, emailSubject, emailContent);
+
+    let link = `${process.env.USER_TO_ASSET}?token=${token}`
+    let notifMessage = `verify the return of ${assignment.quantityAssigned} of ${asset.productName}`
     
     if (emailSent) {
+
+        sendMessageToEmail(assetAdmin,notifMessage,token,link)
         // Email sent successfully
         return res.status(200).json(new ApiResponse(200, "Email sent successfully", null));
     } else {

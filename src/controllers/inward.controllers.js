@@ -6,6 +6,7 @@ import { generateToken } from "../utils/tokenizer.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { emailer } from "../utils/emailer.js";
+import { sendMessageToEmail } from "../socket/socketFunctions.js";
 
 const getAllInward = asyncHandler(async(req,res)=>{
 
@@ -102,18 +103,20 @@ const addInward = asyncHandler(async(req,res)=>{
 
 
     let emailContent = `<h1>To verify the addition of the following assets from security: </h1>`
+    let notifMessage;
 
     assets.forEach(product => {
         emailContent += `<p>Product: ${product.productName}, Quantity: ${product.quantityTotal} ${product.unit}</p>`;
     })
+    notifMessage =  emailContent
     emailContent += `<br><a href="${process.env.SECURITY_TO_ASSET}?token=${token}">Click Here</a>`;
-    
+
     const emailSubject = "Inward to asset addition verification email";
-
-
     const emailSent = await emailer(user.email, emailSubject, emailContent);
+    let link = `${process.env.SECURITY_TO_ASSET}?token=${token}`
     
     if (emailSent) {
+        sendMessageToEmail(user,notifMessage,token,link)
         // Email sent successfully
         return res.status(200).json(new ApiResponse(200, "Email sent successfully", inward));
     } else {

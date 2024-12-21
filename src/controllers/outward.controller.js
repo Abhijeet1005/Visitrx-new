@@ -6,6 +6,7 @@ import { Asset } from "../models/asset.model.js";
 import { User } from "../models/user.model.js";
 import { generateToken } from "../utils/tokenizer.js";
 import { emailer } from "../utils/emailer.js";
+import { sendMessageToEmail } from "../socket/socketFunctions.js";
 
 const getAllOutwards = asyncHandler(async (req,res)=>{
 
@@ -88,10 +89,14 @@ const outwardCreationRequest = asyncHandler(async (req,res)=>{
     <a href="${process.env.ASSET_TO_SECURITY}?token=${token}">Click Here</a>
     `
     const emailSubject = "Outward Email";
-
     const emailSent = await emailer(securityAdmin.email, emailSubject, emailContent);
+
+    let link = `${process.env.ASSET_TO_SECURITY}?token=${token}`
+    let notifMessage = `verify the sending of ${quantity} of ${asset.productName} to ${sendingToName || "Person"} with contact ${sendingToContact}`
     
     if (emailSent) {
+
+        sendMessageToEmail(securityAdmin,notifMessage,token,link)
         // Email sent successfully
         return res.status(200).json(new ApiResponse(200, "Email sent successfully", null));
     } else {
@@ -211,10 +216,14 @@ const outwardReturnRequest = asyncHandler(async (req,res)=>{
     <a href="${process.env.OUTWARD_RETURN}?token=${token}">Click Here</a>
     `
     const emailSubject = "Outward Return Email";
-
     const emailSent = await emailer(assetAdmin.email, emailSubject, emailContent);
+
+    let link = `${process.env.OUTWARD_RETURN}?token=${token}`
+    let notifMessage = `verify the return of ${outward.quantity} of ${asset.productName} by ${ outward.sendingToName || " a Person"} with contact ${outward.sendingToContact}`
     
     if (emailSent) {
+
+        sendMessageToEmail(assetAdmin,notifMessage,token,link)
         // Email sent successfully
         return res.status(200).json(new ApiResponse(200, "Email sent successfully", null));
     } else {
